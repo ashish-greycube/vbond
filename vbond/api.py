@@ -66,13 +66,14 @@ def calculate_transport_data(self, method):
     vehicle_type = self.custom_vehicle_type
 
     if vehicle_type == "Dedicated":
-        rate_per_km = frappe.db.get_value(
-            doctype = "Vehicle",
-            filters = {'name' : vehicle_no},
-            fieldname = ['custom_rate_per_km']
-        )
+        if vehicle_no != None:
+            rate_per_km = frappe.db.get_value(
+                doctype = "Vehicle",
+                filters = {'name' : vehicle_no},
+                fieldname = ['custom_rate_per_km']
+            )
 
-        self.custom_transport_rate_per_km = rate_per_km
+            self.custom_transport_rate_per_km = rate_per_km
 
         transport_distance = self.custom_destination_distance
         transport_rate = self.custom_transport_rate_per_km
@@ -90,46 +91,48 @@ def calculate_transport_data(self, method):
         metric_weight = (kg_weight / 1000)
         mt_weight_range = get_mt_weight_range(metric_weight, state)
         
-        transport_cost, distance, per_ton_value, rate_card_name = frappe.db.get_value(
-            doctype = "Vbond Final Rate Card",
-            filters = {
-                'destination' : destination,
-                'state' : state
-            },
-            fieldname = [mt_weight_range, 'kms', 'per_ton_price', 'name']
-        )
-        if per_ton_value != None:
-            per_ton_value = float(per_ton_value)
-        elif per_ton_value == None:
-            frappe.throw("Per Ton Price Is Not Available In Rate Card {0}".format(get_link_to_form('Vbond Final Rate Card', rate_card_name)))
+        if state and destination != None:
+            transport_cost, distance, per_ton_value, rate_card_name = frappe.db.get_value(
+                doctype = "Vbond Final Rate Card",
+                filters = {
+                    'destination' : destination,
+                    'state' : state
+                },
+                fieldname = [mt_weight_range, 'kms', 'per_ton_price', 'name']
+            )
+            if per_ton_value != None:
+                per_ton_value = float(per_ton_value)
+            elif per_ton_value == None:
+                frappe.throw("Per Ton Price Is Not Available In Rate Card {0}".format(get_link_to_form('Vbond Final Rate Card', rate_card_name)))
 
-        # If Metric Weight Value Is Greater Than Highest Metric Weight Value
-        if state != "HYD" and metric_weight > 30.0:
-            remaining_mt = metric_weight - 30.0
-            extra_cost = remaining_mt * per_ton_value 
+            # If Metric Weight Value Is Greater Than Highest Metric Weight Value
+            if state != "HYD" and metric_weight > 30.0:
+                remaining_mt = metric_weight - 30.0
+                extra_cost = remaining_mt * per_ton_value 
 
-        elif state == "HYD" and metric_weight > 40.0:
-            remaining_mt = metric_weight - 40.0
-            extra_cost = remaining_mt * per_ton_value
-        total_transport_cost = float(transport_cost) + extra_cost
+            elif state == "HYD" and metric_weight > 40.0:
+                remaining_mt = metric_weight - 40.0
+                extra_cost = remaining_mt * per_ton_value
+            total_transport_cost = float(transport_cost) + extra_cost
 
-        self.custom_destination_distance = distance
-        self.custom_transport_cost = total_transport_cost
+            self.custom_destination_distance = distance
+            self.custom_transport_cost = total_transport_cost
 
-        # Moving Vehicle Number From Details To Transfer Section
-        if self.doctype == "Delivery Note" or self.doctype == "Sales Invoice":
-            if self.vehicle_no == None:
-                vehicle_num = self.custom_hired_vehicle_number
-                self.vehicle_no = vehicle_num
-                self.custom_hired_vehicle_number = None
+            # Moving Vehicle Number From Details To Transfer Section
+            if self.doctype == "Delivery Note" or self.doctype == "Sales Invoice":
+                if self.vehicle_no == None:
+                    vehicle_num = self.custom_hired_vehicle_number
+                    self.vehicle_no = vehicle_num
+                    self.custom_hired_vehicle_number = None
 
 # Calculation of Basic Amount
 def calculate_basic_amount(self, method):
     basic_amount = 0
-    for item in self.items:
-        incoming_rate = item.incoming_rate
-        qty = item.qty
+    if len(self.items) > 0:
+        for item in self.items:
+            incoming_rate = item.incoming_rate
+            qty = item.qty
 
-        basic_item_amount = incoming_rate * qty
-        basic_amount += basic_item_amount
-    self.custom_basic_amount = basic_amount
+            basic_item_amount = incoming_rate * qty
+            basic_amount += basic_item_amount
+        self.custom_basic_amount = basic_amount

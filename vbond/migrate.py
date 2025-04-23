@@ -166,7 +166,7 @@ def after_migrate():
           'insert_after' : 'custom_pod_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : ' \nIssue\nNo Issue'
+          'options' : '\nIssue\nNo Issue'
         },
         {
           'fieldname' : 'custom_pod_remarks',
