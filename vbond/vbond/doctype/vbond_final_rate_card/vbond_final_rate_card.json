@@ -1,0 +1,147 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:{destination}-{state}",
+ "creation": "2025-04-15 15:00:55.289638",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "destination",
+  "state",
+  "kms",
+  "0_6_mt",
+  "6_8_mt",
+  "8_10_mt",
+  "10_12_mt",
+  "12_15_mt",
+  "12_16_mt",
+  "column_break_9tih",
+  "15_18_mt",
+  "16_18_mt",
+  "18_20_mt",
+  "20_25_mt",
+  "25_30_mt",
+  "30_35_mt",
+  "35_40_mt",
+  "per_ton_price"
+ ],
+ "fields": [
+  {
+   "fieldname": "destination",
+   "fieldtype": "Data",
+   "label": "Destination"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "kms",
+   "fieldtype": "Float",
+   "label": "KMs"
+  },
+  {
+   "fieldname": "0_6_mt",
+   "fieldtype": "Float",
+   "label": "0_6_MT"
+  },
+  {
+   "fieldname": "6_8_mt",
+   "fieldtype": "Float",
+   "label": "6_8_MT"
+  },
+  {
+   "fieldname": "8_10_mt",
+   "fieldtype": "Float",
+   "label": "8_10_MT"
+  },
+  {
+   "fieldname": "10_12_mt",
+   "fieldtype": "Float",
+   "label": "10_12_MT"
+  },
+  {
+   "fieldname": "12_15_mt",
+   "fieldtype": "Float",
+   "label": "12_15_MT"
+  },
+  {
+   "fieldname": "12_16_mt",
+   "fieldtype": "Float",
+   "label": "12_16_MT"
+  },
+  {
+   "fieldname": "15_18_mt",
+   "fieldtype": "Data",
+   "label": "15_18_MT"
+  },
+  {
+   "fieldname": "16_18_mt",
+   "fieldtype": "Data",
+   "label": "16_18_MT"
+  },
+  {
+   "fieldname": "18_20_mt",
+   "fieldtype": "Data",
+   "label": "18_20_MT"
+  },
+  {
+   "fieldname": "20_25_mt",
+   "fieldtype": "Data",
+   "label": "20_25_MT"
+  },
+  {
+   "fieldname": "25_30_mt",
+   "fieldtype": "Data",
+   "label": "25_30_MT"
+  },
+  {
+   "fieldname": "30_35_mt",
+   "fieldtype": "Data",
+   "label": "30_35_MT"
+  },
+  {
+   "fieldname": "35_40_mt",
+   "fieldtype": "Data",
+   "label": "35_40_MT"
+  },
+  {
+   "fieldname": "per_ton_price",
+   "fieldtype": "Data",
+   "label": "Per Ton Price"
+  },
+  {
+   "fieldname": "column_break_9tih",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-04-15 15:38:00.844477",
+ "modified_by": "Administrator",
+ "module": "Vbond",
+ "name": "Vbond Final Rate Card",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
