@@ -205,8 +205,8 @@ def get_data(filters):
 				'total_amount' : invoice.totalAmount,
 				'transport_amount' : invoice.transportAmount,
 				'transport_cost' : transport_percent,
-				'vehicle_no' : invoice.dedicatedNo if invoice.type == 'Dedicated' else invoice.hiredNo,
-				'transport_name' : 'Company Vehicle' if invoice.type == 'Dedicated' else invoice.transporterName,
+				'vehicle_no' : invoice.dedicatedNo if invoice.type == 'Dedicated / Company Owned' else invoice.hiredNo,
+				'transport_name' : 'Company Vehicle' if invoice.type == 'Dedicated / Company Owned' else invoice.transporterName,
 				'dispatch_date' : delivery_date
 			})
 			data.append(row)

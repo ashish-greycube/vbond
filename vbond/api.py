@@ -65,7 +65,7 @@ def calculate_transport_data(self, method):
     vehicle_no = self.custom_vehicle_number
     vehicle_type = self.custom_vehicle_type
 
-    if vehicle_type == "Dedicated":
+    if vehicle_type == "Dedicated / Company Owned":
         if vehicle_no != None:
             rate_per_km = frappe.db.get_value(
                 doctype = "Vehicle",

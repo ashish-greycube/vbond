@@ -293,7 +293,7 @@ def get_data(filters):
 			tonnage = kg/1000
 
 			# Vehicle Number and Transporter Name
-			if detail.type == "Dedicated":
+			if detail.type == "Dedicated / Company Owned":
 				vehicle = dn_data[0].dedicated_vehicle
 				transporter_name = 'DEDICATED'
 

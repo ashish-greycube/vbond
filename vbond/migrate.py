@@ -45,7 +45,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Hired\nDedicated'
+          'options' : 'Hired\nDedicated / Company Owned\nTPL(Third Party Logistics)'
         },
         {
           'fieldname' : 'custom_vehicle_number',
@@ -55,8 +55,8 @@ def after_migrate():
           'options' : 'Vehicle',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"',
-          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"',
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_hired_vehicle_number',
@@ -65,7 +65,7 @@ def after_migrate():
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Hired"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Hired" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"'
         },
         {
           'fieldname' : 'custom_transport_section',
@@ -81,6 +81,7 @@ def after_migrate():
           'insert_after' : 'custom_transport_section',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_transport_rate_per_km',
@@ -89,7 +90,7 @@ def after_migrate():
           'insert_after' : 'custom_destination_distance',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_transport_column_break',
@@ -232,7 +233,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Hired\nDedicated'
+          'options' : 'Hired\nDedicated / Company Owned\nTPL(Third Party Logistics)'
         },
         {
           'fieldname' : 'custom_vehicle_number',
@@ -242,8 +243,8 @@ def after_migrate():
           'options' : 'Vehicle',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"',
-          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"',
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_hired_vehicle_number',
@@ -252,7 +253,7 @@ def after_migrate():
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Hired"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Hired" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"'
         },
         {
           'fieldname' : 'custom_transport_section',
@@ -268,6 +269,7 @@ def after_migrate():
           'insert_after' : 'custom_transport_section',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_transport_rate_per_km',
@@ -276,7 +278,7 @@ def after_migrate():
           'insert_after' : 'custom_destination_distance',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_transport_column_break',
@@ -354,7 +356,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Hired\nDedicated'
+          'options' : 'Hired\nDedicated / Company Owned\nTPL(Third Party Logistics)'
         },
         {
           'fieldname' : 'custom_vehicle_number',
@@ -364,8 +366,8 @@ def after_migrate():
           'options' : 'Vehicle',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"',
-          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"',
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_hired_vehicle_number',
@@ -374,7 +376,7 @@ def after_migrate():
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Hired"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Hired" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"'
         },
         {
           'fieldname' : 'custom_transport_section',
@@ -390,6 +392,7 @@ def after_migrate():
           'insert_after' : 'custom_transport_section',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_transport_rate_per_km',
@@ -398,7 +401,7 @@ def after_migrate():
           'insert_after' : 'custom_destination_distance',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"'
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated / Company Owned"'
         },
         {
           'fieldname' : 'custom_transport_column_break',
@@ -433,7 +436,7 @@ def after_migrate():
               'insert_after' : 'location',
               'is_custom_field': 1,
               'is_system_generated': 0,
-              'options': 'Dedicated\nHired'
+              'options': '\nDedicated / Company Owned\nHired'
           },
           {
               'fieldname' : 'custom_rate_per_km',
