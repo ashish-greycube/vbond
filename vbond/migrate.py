@@ -55,6 +55,8 @@ def after_migrate():
           'options' : 'Vehicle',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"',
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated"'
         },
         {
           'fieldname' : 'custom_hired_vehicle_number',
@@ -63,6 +65,7 @@ def after_migrate():
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'depends_on': 'eval:doc.custom_vehicle_type=="Hired"'
         },
         {
           'fieldname' : 'custom_transport_section',
@@ -239,6 +242,8 @@ def after_migrate():
           'options' : 'Vehicle',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"',
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated"'
         },
         {
           'fieldname' : 'custom_hired_vehicle_number',
@@ -247,6 +252,7 @@ def after_migrate():
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'depends_on': 'eval:doc.custom_vehicle_type=="Hired"'
         },
         {
           'fieldname' : 'custom_transport_section',
@@ -358,6 +364,8 @@ def after_migrate():
           'options' : 'Vehicle',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'depends_on': 'eval:doc.custom_vehicle_type=="Dedicated"',
+          'mandatory_depends_on' : 'eval:doc.custom_vehicle_type=="Dedicated"'
         },
         {
           'fieldname' : 'custom_hired_vehicle_number',
@@ -366,6 +374,7 @@ def after_migrate():
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
+          'depends_on': 'eval:doc.custom_vehicle_type=="Hired"'
         },
         {
           'fieldname' : 'custom_transport_section',

@@ -15,29 +15,29 @@ frappe.ui.form.on("Sales Invoice", {
         })
     },
 
-    refresh(frm) {
-        if (frm.doc.custom_vehicle_type == "Dedicated") {
-            frm.set_df_property('custom_vehicle_number', 'reqd', 1)
-            frm.set_df_property('custom_hired_vehicle_number', 'hidden', 1)
-            frm.set_df_property('custom_vehicle_number', 'hidden', 0)
-        }
-        else {
-            frm.set_df_property('custom_vehicle_number', 'hidden', 1)
-            frm.set_df_property('custom_hired_vehicle_number', 'hidden', 0)
-        }
-    },
+    // refresh(frm) {
+    //     if (frm.doc.custom_vehicle_type == "Dedicated") {
+    //         frm.set_df_property('custom_vehicle_number', 'reqd', 1)
+    //         frm.set_df_property('custom_hired_vehicle_number', 'hidden', 1)
+    //         frm.set_df_property('custom_vehicle_number', 'hidden', 0)
+    //     }
+    //     else {
+    //         frm.set_df_property('custom_vehicle_number', 'hidden', 1)
+    //         frm.set_df_property('custom_hired_vehicle_number', 'hidden', 0)
+    //     }
+    // },
 
-    custom_vehicle_type(frm) {
-        if (frm.doc.custom_vehicle_type == "Dedicated") {
-            frm.set_df_property('custom_vehicle_number', 'reqd', 1)
-            frm.set_df_property('custom_destination_distance', 'reqd', 1)
-            frm.set_df_property('custom_hired_vehicle_number', 'hidden', 1)
-            frm.set_df_property('custom_vehicle_number', 'hidden', 0)
-        }
-        else {
-            frm.set_df_property('custom_vehicle_number', 'hidden', 1)
-            frm.set_df_property('custom_hired_vehicle_number', 'hidden', 0)
-            frm.set_df_property('custom_destination_distance', 'reqd', 0)
-        }
-    },
+    // custom_vehicle_type(frm) {
+    //     if (frm.doc.custom_vehicle_type == "Dedicated") {
+    //         frm.set_df_property('custom_vehicle_number', 'reqd', 1)
+    //         frm.set_df_property('custom_destination_distance', 'reqd', 1)
+    //         frm.set_df_property('custom_hired_vehicle_number', 'hidden', 1)
+    //         frm.set_df_property('custom_vehicle_number', 'hidden', 0)
+    //     }
+    //     else {
+    //         frm.set_df_property('custom_vehicle_number', 'hidden', 1)
+    //         frm.set_df_property('custom_hired_vehicle_number', 'hidden', 0)
+    //         frm.set_df_property('custom_destination_distance', 'reqd', 0)
+    //     }
+    // },
 });
