@@ -29,13 +29,15 @@
  "fields": [
   {
    "fieldname": "destination",
-   "fieldtype": "Data",
-   "label": "Destination"
+   "fieldtype": "Link",
+   "label": "Destination",
+   "options": "Destination VB"
   },
   {
    "fieldname": "state",
-   "fieldtype": "Data",
-   "label": "State"
+   "fieldtype": "Link",
+   "label": "State",
+   "options": "State VB"
   },
   {
    "fieldname": "kms",
@@ -74,42 +76,42 @@
   },
   {
    "fieldname": "15_18_mt",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "15_18_MT"
   },
   {
    "fieldname": "16_18_mt",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "16_18_MT"
   },
   {
    "fieldname": "18_20_mt",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "18_20_MT"
   },
   {
    "fieldname": "20_25_mt",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "20_25_MT"
   },
   {
    "fieldname": "25_30_mt",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "25_30_MT"
   },
   {
    "fieldname": "30_35_mt",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "30_35_MT"
   },
   {
    "fieldname": "35_40_mt",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "35_40_MT"
   },
   {
    "fieldname": "per_ton_price",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "Per Ton Price"
   },
   {
@@ -120,7 +122,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-15 15:38:00.844477",
+ "modified": "2025-04-25 11:01:47.768861",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "Vbond Final Rate Card",

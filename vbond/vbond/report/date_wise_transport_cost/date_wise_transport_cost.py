@@ -94,8 +94,9 @@ def get_data(filters, columns):
 					total_transport_amounts = total_transport_amounts + invoice.get('totalTransoprtCost')
 
 					total_tonnage = total_tonnage + invoice.get('totalNetWeight') / 1000
-					total_tp_cost_percent = (total_transport_amounts / total_invoice_amounts) * 100
-					
+					if total_invoice_amounts > 0:
+						total_tp_cost_percent = (total_transport_amounts / total_invoice_amounts) * 100
+					else: total_tp_cost_percent = 0
 					# Filling values to the columns
 					if invoice.get('custom_state') != None and invoice.get('custom_state').lower() == column.get('fieldname'):
 						if details[i] == 'Vehicles':

@@ -101,7 +101,9 @@ def get_data(filters, columns):
 					total_transport_amounts = total_transport_amounts + invoice.get('totalTransoprtCost')
 				
 					total_tonnage = total_tonnage + invoice.get('totalNetWeight') / 1000
-					total_tp_cost_percent = (total_transport_amounts / total_invoice_amounts) * 100
+					if total_invoice_amounts > 0:
+						total_tp_cost_percent = (total_transport_amounts / total_invoice_amounts) * 100
+					else: total_tp_cost_percent = 0
 					if invoice.get('totalVehicles') > 0:
 						curr_state_vehicle_percent = (invoice.get('totalVehicles') / total_vehicles) * 100
 					else: curr_state_vehicle_percent = 0
@@ -147,8 +149,9 @@ def get_data(filters, columns):
 					if details[i] == 'TP Cost(%)':
 						col_data = (column.get('fieldname'), total_tp_cost_percent)
 					elif details[i] == 'Cost Per Ton':
-						total_cpt = total_transport_amounts / total_tonnage
-						col_data = (column.get('fieldname'), total_cpt)
+						if total_tonnage > 0:
+							total_cpt = total_transport_amounts / total_tonnage
+							col_data = (column.get('fieldname'), total_cpt)
 					else:
 						col_data = (column.get('fieldname'), total_mtd)
 					
