@@ -236,111 +236,113 @@ def get_data(filters):
 		''',
 	as_dict = 1)
 
-	for detail in dispatch_details:
-		# Delivery Note Data
-		dn_data = frappe.db.sql(
-			f'''
-			SELECT 
-				dn.name as 'dn_name',
-				dn.transporter as 'transporter',
-				dn.vehicle_no as 'hired_vehicle',
-				dn.custom_vehicle_number as 'dedicated_vehicle',
-				dn.custom_driver_no as 'driver_no',
-				dn.owner as 'reference_name',
-				dn.total_net_weight as 'weight',
-				dn.shipping_address as 'shipping_address',
-				dn.custom_alloc_datetime as 'alloc_dt',
-				dn.custom_dispatch_datetime as 'dispatch_dt',
-				dn.custom_delivered_datetime as 'pod_datetime',
-				dn.custom_pod_status  as 'pod_status',
-				dn.custom_pod_remarks as 'pod_remarks',
-				dn.custom_action_plan as 'action_plan'
-			FROM 
-				`tabDelivery Note` dn
-			INNER JOIN 
-				`tabDelivery Note Item` dni
-			WHERE 
-				dni.against_sales_order = '{detail.so_no}' AND dn.name  = dni.parent;  
-			'''
-		, as_dict = 1)
-	
-		# Sales Invoice Data
-		si_data = frappe.db.sql(
-			f'''
-			SELECT 
-				tsi.name ,
-				tsi.posting_date,
-				tsi.net_total ,
-				tsi.custom_transport_cost
-			FROM 
-				`tabSales Invoice` tsi 
-			INNER JOIN 
-				`tabSales Invoice Item` tsii
-			WHERE 
-				tsii.delivery_note = '{dn_data[0].dn_name if dn_data != [] else ''}' 
-			AND tsi.name  = tsii.parent 
-			AND tsi.is_return != 1
-			AND tsi.docstatus = 1; 
-			''',
-		as_dict = 1)
-	
-		vehicle = ''
-		transporter_name = ''
-		tonnage = 0
-		if dn_data != []:
-			# Tonnage Value
-			kg = dn_data[0].weight
-			tonnage = kg/1000
-
-			# Vehicle Number and Transporter Name
-			if detail.type == "Dedicated / Company Owned":
-				vehicle = dn_data[0].dedicated_vehicle
-				transporter_name = 'DEDICATED'
-
-			elif detail.type  == "Hired":
-				vehicle = dn_data[0].hired_vehicle
-				transporter_name = dn_data[0].transporter
-		
-		# Main Data Rows
-		row = frappe._dict({
-			# Sales Order Data
-			'so_creation_date' : detail.date,
-			'so_number' : detail.so_no,
-			'so_transaction_date' : detail.transaction_date,
-			'party_name' : detail.party_name,
-			'party_contact_no' : frappe.db.get_value('Contact', {'name' : detail.party_contact}, ['mobile_no']) if dn_data != [] else '',
-			'state': detail.state,
-			'destination' : detail.destination,
-			'transport_req_time' : detail.delivery_time,
-			'transport_req_date' : detail.delivery_date,
-			'vehicle_request_time' : (detail.vehicle_datetime).strftime('%H:%M:%S') if detail.vehicle_datetime != None else '',
-			'vehicle_request_date' : detail.vehicle_datetime, 
-
+	if len(dispatch_details) > 0:
+		for detail in dispatch_details:
 			# Delivery Note Data
-			'transporter_name' : transporter_name,
-			'vehicle_no' : vehicle,
-			'driver_no' : dn_data[0].driver_no if dn_data != [] else '',
-			'reference' : frappe.db.get_value('User', {'name' : dn_data[0].reference_name}, ['full_name']) if dn_data != [] else '',
-			'tonnage' : tonnage,
-			'shipping_address' : dn_data[0].shipping_address if dn_data != [] else '',
-			'alloc_date' : dn_data[0].alloc_dt if dn_data != [] else '',
-			'dispatch_date' : dn_data[0].dispatch_dt if dn_data != [] else '',
-			'pod_date' : dn_data[0].pod_datetime if dn_data != [] else '',
-			'alloc_time' : (dn_data[0].alloc_dt).strftime('%H:%M:%S') if dn_data != [] and dn_data[0].alloc_dt != None else '',
-			'dispatch_time' : (dn_data[0].dispatch_dt).strftime('%H:%M:%S') if dn_data != [] and dn_data[0].dispatch_dt != None else '',
-			'pod_time' : (dn_data[0].pod_datetime).strftime('%H:%M:%S') if dn_data != [] and dn_data[0].pod_datetime != None else '',
-			'pod_status' : dn_data[0].pod_status if dn_data != [] else '',
-			'pod_remarks' : dn_data[0].pod_remarks if dn_data != [] else '',
-			'action_plan' : dn_data[0].action_plan if dn_data != [] else '',
-
+			dn_data = frappe.db.sql(
+				f'''
+				SELECT 
+					dn.name as 'dn_name',
+					dn.transporter as 'transporter',
+					dn.vehicle_no as 'hired_vehicle',
+					dn.custom_hired_vehicle_number as tplNo,
+					dn.custom_vehicle_number as 'dedicated_vehicle',
+					dn.custom_driver_no as 'driver_no',
+					dn.owner as 'reference_name',
+					dn.total_net_weight as 'weight',
+					dn.shipping_address as 'shipping_address',
+					dn.custom_alloc_datetime as 'alloc_dt',
+					dn.custom_dispatch_datetime as 'dispatch_dt',
+					dn.custom_delivered_datetime as 'pod_datetime',
+					dn.custom_pod_status  as 'pod_status',
+					dn.custom_pod_remarks as 'pod_remarks',
+					dn.custom_action_plan as 'action_plan'
+				FROM 
+					`tabDelivery Note` dn
+				INNER JOIN 
+					`tabDelivery Note Item` dni
+				WHERE 
+					dni.against_sales_order = '{detail.so_no}' AND dn.name  = dni.parent;  
+				'''
+			, as_dict = 1)
+		
 			# Sales Invoice Data
-			'invoice_no' : si_data[0].name if si_data != [] else '',
-			'invoice_value' : si_data[0].net_total if si_data != [] else '',
-			'invoice_date' : si_data[0].posting_date if si_data != [] else '',
-			'rate' : si_data[0].custom_transport_cost if si_data != [] else ''
-		})
-		total_transport_cost = total_transport_cost + si_data[0].custom_transport_cost if si_data != [] else 0
-		data.append(row)
+			si_data = frappe.db.sql(
+				f'''
+				SELECT 
+					tsi.name ,
+					tsi.posting_date,
+					tsi.net_total ,
+					tsi.custom_transport_cost
+				FROM 
+					`tabSales Invoice` tsi 
+				INNER JOIN 
+					`tabSales Invoice Item` tsii
+				WHERE 
+					tsii.delivery_note = '{dn_data[0].dn_name if dn_data != [] else ''}' 
+				AND tsi.name  = tsii.parent 
+				AND tsi.is_return != 1
+				AND tsi.docstatus = 1; 
+				''',
+			as_dict = 1)
+		
+			vehicle = ''
+			tonnage = 0
+			if dn_data != []:
+				# Tonnage Value
+				kg = dn_data[0].weight
+				tonnage = kg/1000
+
+				# Vehicle Number
+				if detail.type == "Dedicated / Company Owned":
+					vehicle = dn_data[0].dedicated_vehicle
+
+				elif detail.type  == "Hired":
+					vehicle = dn_data[0].hired_vehicle
+				else:
+					vehicle = dn_data[0].tplNo
+					
+			
+			# Main Data Rows
+			row = frappe._dict({
+				# Sales Order Data
+				'so_creation_date' : detail.date,
+				'so_number' : detail.so_no,
+				'so_transaction_date' : detail.transaction_date,
+				'party_name' : detail.party_name,
+				'party_contact_no' : frappe.db.get_value('Contact', {'name' : detail.party_contact}, ['mobile_no']) if dn_data != [] else '',
+				'state': detail.state,
+				'destination' : detail.destination,
+				'transport_req_time' : detail.delivery_time,
+				'transport_req_date' : detail.delivery_date,
+				'vehicle_request_time' : (detail.vehicle_datetime).strftime('%H:%M:%S') if detail.vehicle_datetime != None else '',
+				'vehicle_request_date' : detail.vehicle_datetime, 
+
+				# Delivery Note Data
+				'transporter_name' : dn_data[0].transporter if dn_data != [] else '',
+				'vehicle_no' : vehicle,
+				'driver_no' : dn_data[0].driver_no if dn_data != [] else '',
+				'reference' : frappe.db.get_value('User', {'name' : dn_data[0].reference_name}, ['full_name']) if dn_data != [] else '',
+				'tonnage' : tonnage,
+				'shipping_address' : dn_data[0].shipping_address if dn_data != [] else '',
+				'alloc_date' : dn_data[0].alloc_dt if dn_data != [] else '',
+				'dispatch_date' : dn_data[0].dispatch_dt if dn_data != [] else '',
+				'pod_date' : dn_data[0].pod_datetime if dn_data != [] else '',
+				'alloc_time' : (dn_data[0].alloc_dt).strftime('%H:%M:%S') if dn_data != [] and dn_data[0].alloc_dt != None else '',
+				'dispatch_time' : (dn_data[0].dispatch_dt).strftime('%H:%M:%S') if dn_data != [] and dn_data[0].dispatch_dt != None else '',
+				'pod_time' : (dn_data[0].pod_datetime).strftime('%H:%M:%S') if dn_data != [] and dn_data[0].pod_datetime != None else '',
+				'pod_status' : dn_data[0].pod_status if dn_data != [] else '',
+				'pod_remarks' : dn_data[0].pod_remarks if dn_data != [] else '',
+				'action_plan' : dn_data[0].action_plan if dn_data != [] else '',
+
+				# Sales Invoice Data
+				'invoice_no' : si_data[0].name if si_data != [] else '',
+				'invoice_value' : si_data[0].net_total if si_data != [] else '',
+				'invoice_date' : si_data[0].posting_date if si_data != [] else '',
+				'rate' : si_data[0].custom_transport_cost if si_data != [] else ''
+			})
+			total_transport_cost = total_transport_cost + si_data[0].custom_transport_cost if si_data != [] else 0
+			data.append(row)
 
 	# Total Row Calcualtion
 	row = frappe._dict({

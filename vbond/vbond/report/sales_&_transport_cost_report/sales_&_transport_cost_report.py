@@ -166,6 +166,7 @@ def get_data(filters):
 			tsi.custom_transport_cost as 'transportAmount',
 			tsi.custom_vehicle_number as 'dedicatedNo',
 			tsi.vehicle_no as 'hiredNo',
+			tsi.custom_hired_vehicle_number as 'tplNo',
 			tsi.transporter as 'transporterName',
 			tsi.custom_vehicle_type as 'type'
 		FROM 
@@ -192,6 +193,14 @@ def get_data(filters):
 			delivery_note = frappe.db.get_value('Sales Invoice Item', {'parent' : invoice.invoiceNo}, ['delivery_note'])
 			delivery_date = frappe.db.get_value('Delivery Note', {'name' : delivery_note}, ['posting_date'])
 
+			vehicle_num = ''
+			if invoice.type == 'Dedicated / Company Owned':
+				vehicle_num = invoice.dedicatedNo
+			elif invoice.type == 'Hired':
+				vehicle_num = invoice.hiredNo
+			else:
+				vehicle_num = invoice.tplNo
+
 			row = frappe._dict({
 				'date' : invoice.date,
 				'party_name' : invoice.partyName,
@@ -205,8 +214,8 @@ def get_data(filters):
 				'total_amount' : invoice.totalAmount,
 				'transport_amount' : invoice.transportAmount,
 				'transport_cost' : transport_percent,
-				'vehicle_no' : invoice.dedicatedNo if invoice.type == 'Dedicated / Company Owned' else invoice.hiredNo,
-				'transport_name' : 'Company Vehicle' if invoice.type == 'Dedicated / Company Owned' else invoice.transporterName,
+				'vehicle_no' : vehicle_num,
+				'transport_name' : invoice.transporterName,
 				'dispatch_date' : delivery_date
 			})
 			data.append(row)

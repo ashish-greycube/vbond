@@ -1,5 +1,4 @@
 import frappe
-from frappe.utils import get_link_to_form
 
 # Function For Filtering Destination Based On State
 @frappe.whitelist()
@@ -83,7 +82,6 @@ def calculate_transport_data(self, method):
             self.custom_transport_cost = transport_cost
 
     elif vehicle_type == "Hired":
-        extra_cost = 0
         state = self.custom_state
         destination = self.custom_transport_destination
         kg_weight = self.total_net_weight
@@ -92,31 +90,17 @@ def calculate_transport_data(self, method):
         mt_weight_range = get_mt_weight_range(metric_weight, state)
         
         if state and destination != None:
-            transport_cost, distance, per_ton_value, rate_card_name = frappe.db.get_value(
+            transport_cost, distance = frappe.db.get_value(
                 doctype = "Vbond Final Rate Card",
                 filters = {
                     'destination' : destination,
                     'state' : state
                 },
-                fieldname = [mt_weight_range, 'kms', 'per_ton_price', 'name']
+                fieldname = [mt_weight_range, 'kms',]
             )
-            if per_ton_value != None:
-                per_ton_value = float(per_ton_value)
-            elif per_ton_value == None:
-                frappe.throw("Per Ton Price Is Not Available In Rate Card {0}".format(get_link_to_form('Vbond Final Rate Card', rate_card_name)))
-
-            # If Metric Weight Value Is Greater Than Highest Metric Weight Value
-            if state != "HYD" and metric_weight > 30.0:
-                remaining_mt = metric_weight - 30.0
-                extra_cost = remaining_mt * per_ton_value 
-
-            elif state == "HYD" and metric_weight > 40.0:
-                remaining_mt = metric_weight - 40.0
-                extra_cost = remaining_mt * per_ton_value
-            total_transport_cost = float(transport_cost) + extra_cost
-
+          
             self.custom_destination_distance = distance
-            self.custom_transport_cost = total_transport_cost
+            self.custom_transport_cost = transport_cost
 
             # Moving Vehicle Number From Details To Transfer Section
             if self.doctype == "Delivery Note" or self.doctype == "Sales Invoice":

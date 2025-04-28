@@ -61,7 +61,7 @@ def get_data(filters, columns):
 	invoices = frappe.db.sql("""
 					SELECT 
 						tsi.custom_state,
-						COUNT(DISTINCT(tsi.custom_vehicle_number)) + COUNT(DISTINCT(tsi.vehicle_no)) AS 'totalVehicles', 
+						COUNT(DISTINCT(tsi.custom_vehicle_number)) + COUNT(DISTINCT(tsi.vehicle_no)) + COUNT(DISTINCT(tsi.custom_hired_vehicle_number))AS 'totalVehicles', 
 						SUM(tsi.total) AS 'totalInvoiceValue', 
 						SUM(tsi.total_net_weight) AS 'totalNetWeight', 
 						SUM(tsi.custom_transport_cost) AS 'totalTransoprtCost'
@@ -104,6 +104,7 @@ def get_data(filters, columns):
 					if total_invoice_amounts > 0:
 						total_tp_cost_percent = (total_transport_amounts / total_invoice_amounts) * 100
 					else: total_tp_cost_percent = 0
+					
 					if invoice.get('totalVehicles') > 0:
 						curr_state_vehicle_percent = (invoice.get('totalVehicles') / total_vehicles) * 100
 					else: curr_state_vehicle_percent = 0

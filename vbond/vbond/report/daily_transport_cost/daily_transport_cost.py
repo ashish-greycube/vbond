@@ -83,7 +83,7 @@ def get_data(filters):
 		if curr_date >= conditions.get('from_date'):
 			invoice_data = frappe.db.sql(f"""
 								SELECT 
-									COUNT(DISTINCT(tsi.custom_vehicle_number)) + COUNT(DISTINCT(tsi.vehicle_no)) AS 'totalVehicles', 
+									COUNT(DISTINCT(tsi.custom_vehicle_number)) + COUNT(DISTINCT(tsi.vehicle_no)) + COUNT(DISTINCT(tsi.custom_hired_vehicle_number))AS 'totalVehicles', 
 									SUM(tsi.total) AS 'totalInvoiceValue', 
 									SUM(tsi.total_net_weight) AS 'totalNetWeight', 
 									SUM(tsi.custom_transport_cost) AS 'totalTransportCost'
@@ -117,8 +117,6 @@ def get_data(filters):
 			data.append(row_data)
 
 			# Total Row Calculation
-	
-
 			total_vehicles = total_vehicles + invoice_data[0]['totalVehicles']
 			total_invoice_value = total_invoice_value + invoice_data[0]['totalInvoiceValue'] 
 			total_disp_tonnage = total_disp_tonnage + (invoice_data[0]['totalNetWeight'] / 1000)

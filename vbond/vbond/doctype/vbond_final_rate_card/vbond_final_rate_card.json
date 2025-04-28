@@ -18,13 +18,11 @@
   "12_16_mt",
   "column_break_9tih",
   "15_18_mt",
-  "16_18_mt",
   "18_20_mt",
   "20_25_mt",
   "25_30_mt",
   "30_35_mt",
-  "35_40_mt",
-  "per_ton_price"
+  "35_40_mt"
  ],
  "fields": [
   {
@@ -47,72 +45,62 @@
   {
    "fieldname": "0_6_mt",
    "fieldtype": "Float",
-   "label": "0_6_MT"
+   "label": "6MT"
   },
   {
    "fieldname": "6_8_mt",
    "fieldtype": "Float",
-   "label": "6_8_MT"
+   "label": "8MT"
   },
   {
    "fieldname": "8_10_mt",
    "fieldtype": "Float",
-   "label": "8_10_MT"
+   "label": "10MT"
   },
   {
    "fieldname": "10_12_mt",
    "fieldtype": "Float",
-   "label": "10_12_MT"
+   "label": "12MT"
   },
   {
    "fieldname": "12_15_mt",
    "fieldtype": "Float",
-   "label": "12_15_MT"
+   "label": "15MT"
   },
   {
    "fieldname": "12_16_mt",
    "fieldtype": "Float",
-   "label": "12_16_MT"
+   "label": "16MT"
   },
   {
    "fieldname": "15_18_mt",
    "fieldtype": "Float",
-   "label": "15_18_MT"
-  },
-  {
-   "fieldname": "16_18_mt",
-   "fieldtype": "Float",
-   "label": "16_18_MT"
+   "label": "18MT"
   },
   {
    "fieldname": "18_20_mt",
    "fieldtype": "Float",
-   "label": "18_20_MT"
+   "label": "20MT"
   },
   {
    "fieldname": "20_25_mt",
    "fieldtype": "Float",
-   "label": "20_25_MT"
+   "label": "25MT"
   },
   {
    "fieldname": "25_30_mt",
    "fieldtype": "Float",
-   "label": "25_30_MT"
+   "label": "30MT"
   },
   {
    "fieldname": "30_35_mt",
    "fieldtype": "Float",
-   "label": "30_35_MT"
+   "label": "35MT"
   },
   {
    "fieldname": "35_40_mt",
    "fieldtype": "Float",
-   "label": "35_40_MT"
-  },
-  {
-   "fieldname": "per_ton_price",
-   "fieldtype": "Float",
-   "label": "Per Ton Price"
+   "label": "40MT"
   },
   {
    "fieldname": "column_break_9tih",
@@ -122,7 +110,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-25 11:01:47.768861",
+ "modified": "2025-04-25 16:02:38.256031",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "Vbond Final Rate Card",
