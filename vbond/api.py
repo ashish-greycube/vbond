@@ -64,6 +64,13 @@ def calculate_transport_data(self, method):
     vehicle_no = self.custom_vehicle_number
     vehicle_type = self.custom_vehicle_type
 
+    # Total Tonnage Value For SO, SI & DN
+    if len(self.items) > 0:
+        kg_weight = self.total_net_weight
+        if kg_weight > 0:
+            tonnage_weight = kg_weight / 1000
+            self.custom_total_tonnage = tonnage_weight
+
     if vehicle_type == "Dedicated / Company Owned":
         if vehicle_no != None:
             rate_per_km = frappe.db.get_value(

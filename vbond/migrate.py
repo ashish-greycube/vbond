@@ -115,6 +115,16 @@ def after_migrate():
           'is_system_generated' : 0,
           'insert_after' : 'net_total'
         },
+        {
+          'fieldname' : 'custom_total_tonnage',
+          'fieldtype' : 'Float',
+          'label' : 'Total Tonnage',
+          'insert_after' : 'total_net_weight',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,  
+          "read_only": 1,
+        },
+
 
         # Logistics Report Fields
         {
@@ -295,6 +305,15 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
         },
+        {
+          'fieldname' : 'custom_total_tonnage',
+          'fieldtype' : 'Float',
+          'label' : 'Total Tonnage',
+          'insert_after' : 'total_net_weight',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,  
+          "read_only": 1,
+        },
 
         # Logistics Report Fields
         {
@@ -312,7 +331,7 @@ def after_migrate():
           'label' : 'Vehicle Request Date & Time',
           'insert_after' : 'custom_delivery_time',
           'is_custom_field' : 1,
-          'is_system_generated' : 0
+          'is_system_generated' : 0,
         },
       ], 
 
@@ -425,7 +444,16 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'insert_after' : 'net_total'
-        }
+        },
+        {
+          'fieldname' : 'custom_total_tonnage',
+          'fieldtype' : 'Float',
+          'label' : 'Total Tonnage',
+          'insert_after' : 'total_net_weight',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,  
+          "read_only": 1,
+        },
       ],
 
       "Vehicle" : [
