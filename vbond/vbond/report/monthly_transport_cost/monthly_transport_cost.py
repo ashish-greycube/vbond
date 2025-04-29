@@ -76,7 +76,9 @@ def get_data(filters, columns):
 	if len(invoices) > 0:
 		total_vehicles = 0
 		for invoice in invoices:
-			total_vehicles = total_vehicles + invoice.get('totalVehicles')
+			if invoice.get('custom_state') != None:
+				total_vehicles = total_vehicles + invoice.get('totalVehicles')
+				
 
 		# Looping details to create rows of details
 		for i in range(len(details)):   								

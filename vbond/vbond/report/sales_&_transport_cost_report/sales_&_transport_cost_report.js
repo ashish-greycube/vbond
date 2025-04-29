@@ -4,15 +4,14 @@
 frappe.query_reports["Sales & Transport Cost Report"] = {
 	"filters": [
 		{
-			'fieldname' : 'si_date',
+			'fieldname' : 'from_date',
 			'fieldtype' : 'Date',
-			'label' : __('Date'),
+			'label' : __('From Date'),
 		},
 		{
-			'fieldname' : 'customer',
-			'fieldtype' : 'Link',
-			'label' : __('Party Name'),
-			'options' : 'Customer',
+			'fieldname' : 'to_date',
+			'fieldtype' : 'Date',
+			'label' : __('To Date'),
 		},
 		{
 			'fieldname' : 'state',
@@ -24,7 +23,7 @@ frappe.query_reports["Sales & Transport Cost Report"] = {
 			'fieldname' : 'vehicle_type',
 			'fieldtype' : 'Select',
 			'label' : __('Vehicle Type'),
-			'options' : ' \nHired\nDedicated / Company Owned',
+			'options' : '\nHired\nDedicated / Company Owned\nTPL(Third Party Logistics)',
 		},
 	],
 

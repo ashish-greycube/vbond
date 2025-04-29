@@ -119,17 +119,28 @@ def get_conditions(filters):
 	curr_month = datetime.now().strftime('%m')
 	curr_year = datetime.now().strftime('%Y')
 
-	if not filters.get('si_date'):
+	if not filters.get('from_date'):
 		condition += f"tsi.posting_date BETWEEN '{curr_year}-{curr_month}-01' AND '{curr_year}-{curr_month}-31'"
 	
-	if filters.get('si_date'):
-		if filters.get('si_date') >= f'{curr_year}-{curr_month}-01' and  filters.get('si_date') <= f'{curr_year}-{curr_month}-31':
-			condition += f"tsi.posting_date BETWEEN '{curr_year}-{curr_month}-01' AND '{curr_year}-{curr_month}-31' and tsi.posting_date = '{filters.get('si_date')}'"
+	if filters.get('from_date'):
+		if filters.get('from_date') >= f'{curr_year}-{curr_month}-01' and  filters.get('from_date') <= f'{curr_year}-{curr_month}-31':
+			condition += f"tsi.posting_date BETWEEN '{filters.get('from_date')}' AND '{curr_year}-{curr_month}-31'"
 		else:
-			condition += f"tsi.posting_date = '{filters.get('si_date')}'"
+			condition += f"tsi.posting_date = '{filters.get('from_date')}'"
 
-	if filters.get('customer'):
-		condition += f"and tsi.customer = '{filters.get('customer')}'"	
+	if filters.get('to_date'):
+		condition = ""
+		if not filters.get('from_date'):
+			if filters.get('to_date') >= f'{curr_year}-{curr_month}-01' and  filters.get('to_date') <= f'{curr_year}-{curr_month}-31':
+				condition += f"tsi.posting_date BETWEEN '{curr_year}-{curr_month}-01' AND '{filters.get('to_date')}'"
+			else:
+				condition += f"tsi.posting_date = '{filters.get('to_date')}'"
+
+	if filters.get('from_date') and filters.get('to_date'):
+		if filters.get('from_date') > filters.get('to_date'):
+			frappe.throw("From Date Should Be Less Than To Date")
+		condition += f"tsi.posting_date BETWEEN '{filters.get('from_date')}' AND '{filters.get('to_date')}'"
+
 
 	if filters.get('state'): 
 		condition += f"and tsi.custom_state = '{filters.get('state')}'"	
