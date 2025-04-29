@@ -164,7 +164,8 @@ def after_migrate():
           'label' : 'POD Time',
           'insert_after' : 'custom_dispatch_datetime',
           'is_custom_field' : 1,
-          'is_system_generated' : 0
+          'is_system_generated' : 0,
+          'allow_on_submit' : 1,
         },
         {
           'fieldname' : 'custom_pod_column_break',
@@ -180,7 +181,8 @@ def after_migrate():
           'insert_after' : 'custom_pod_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : '\nIssue\nNo Issue'
+          'options' : '\nIssue\nNo Issue',
+          'allow_on_submit' : 1,
         },
         {
           'fieldname' : 'custom_pod_remarks',
@@ -189,7 +191,8 @@ def after_migrate():
           'insert_after' : 'custom_pod_status',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'mandatory_depends_on' : 'eval:doc.custom_pod_status == "Issue"'
+          'mandatory_depends_on' : 'eval:doc.custom_pod_status == "Issue"',
+          'allow_on_submit' : 1,
         },
         {
           'fieldname' : 'custom_action_plan',
@@ -198,7 +201,8 @@ def after_migrate():
           'insert_after' : 'custom_pod_remarks',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on' : 'eval:doc.custom_pod_status == "Issue"'
+          'depends_on' : 'eval:doc.custom_pod_status == "Issue"',
+          'allow_on_submit' : 1,
         },
       ],
 
