@@ -25,6 +25,19 @@ frappe.query_reports["Sales & Transport Cost Report"] = {
 			'label' : __('Vehicle Type'),
 			'options' : '\nHired\nDedicated / Company Owned\nTPL(Third Party Logistics)',
 		},
+		{
+			'fieldname' : 'transporter',
+			'fieldtype' : 'Link',
+			'label' : __('Transporter'),
+			'options' : 'Supplier',
+			'get_query' : function () {
+				return {
+					filters : {
+						'is_transporter' : 1
+					}
+				}
+			}
+		},
 	],
 
 	// Formatting Total Row

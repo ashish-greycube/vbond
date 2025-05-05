@@ -65,7 +65,7 @@ def get_data(filters, columns):
 					FROM 
 						`tabSales Invoice` tsi 
 					WHERE 
-						posting_date = '{0}'
+						posting_date = '{0}' AND tsi.docstatus != 2
 					GROUP BY tsi.custom_state; 
 				""".format(conditions.get('date'))
 				, as_dict = 1)
@@ -89,14 +89,18 @@ def get_data(filters, columns):
 				total_tonnage = 0
 
 				# Traversing each invoice in data to fill values
-				for invoice in invoices:								
-					total_invoice_amounts = total_invoice_amounts + invoice.get('totalInvoiceValue')
-					total_transport_amounts = total_transport_amounts + invoice.get('totalTransoprtCost')
+				for invoice in invoices:	
+					if invoice.get('custom_state') != None: 							
+						total_invoice_amounts = total_invoice_amounts + invoice.get('totalInvoiceValue')
+						total_transport_amounts = total_transport_amounts + invoice.get('totalTransoprtCost')
 
-					total_tonnage = total_tonnage + invoice.get('totalNetWeight') / 1000
-					if total_invoice_amounts > 0:
+					if invoice.get('custom_state') != None: 
+						total_tonnage = total_tonnage + invoice.get('totalNetWeight') / 1000
+
+					if total_invoice_amounts > 0 and invoice.get('custom_state') != None:
 						total_tp_cost_percent = (total_transport_amounts / total_invoice_amounts) * 100
 					else: total_tp_cost_percent = 0
+					
 					# Filling values to the columns
 					if invoice.get('custom_state') != None and invoice.get('custom_state').lower() == column.get('fieldname'):
 						if details[i] == 'Vehicles':

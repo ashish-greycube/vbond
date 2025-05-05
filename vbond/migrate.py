@@ -50,7 +50,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_vehicle_number',
           'fieldtype' : 'Link',
-          'label' : 'Vehicle Number',
+          'label' : 'Vehicle No (Dedicated / Company Owned)',
           'insert_after' : 'custom_vehicle_type',
           'options' : 'Vehicle',
           'is_custom_field' : 1,
@@ -61,7 +61,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_hired_vehicle_number',
           'fieldtype' : 'Data',
-          'label' : 'Vehicle Number',
+          'label' : 'Vehicle No (Hired / Third Party Logistics)',
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
@@ -118,7 +118,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_total_tonnage',
           'fieldtype' : 'Float',
-          'label' : 'Total Tonnage',
+          'label' : 'Total Tonnage (MT)',
           'insert_after' : 'total_net_weight',
           'is_custom_field' : 1,
           'is_system_generated' : 0,  
@@ -252,7 +252,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_vehicle_number',
           'fieldtype' : 'Link',
-          'label' : 'Vehicle Number',
+          'label' : 'Vehicle No (Dedicated / Company Owned)',
           'insert_after' : 'custom_vehicle_type',
           'options' : 'Vehicle',
           'is_custom_field' : 1,
@@ -263,7 +263,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_hired_vehicle_number',
           'fieldtype' : 'Data',
-          'label' : 'Vehicle Number',
+          'label' : 'Vehicle No (Hired / Third Party Logistics)',
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
@@ -312,7 +312,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_total_tonnage',
           'fieldtype' : 'Float',
-          'label' : 'Total Tonnage',
+          'label' : 'Total Tonnage (MT)',
           'insert_after' : 'total_net_weight',
           'is_custom_field' : 1,
           'is_system_generated' : 0,  
@@ -384,7 +384,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_vehicle_number',
           'fieldtype' : 'Link',
-          'label' : 'Vehicle Number',
+          'label' : 'Vehicle No (Dedicated / Company Owned)',
           'insert_after' : 'custom_vehicle_type',
           'options' : 'Vehicle',
           'is_custom_field' : 1,
@@ -395,7 +395,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_hired_vehicle_number',
           'fieldtype' : 'Data',
-          'label' : 'Vehicle Number',
+          'label' : 'Vehicle No (Hired / Third Party Logistics)',
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
@@ -452,7 +452,7 @@ def after_migrate():
         {
           'fieldname' : 'custom_total_tonnage',
           'fieldtype' : 'Float',
-          'label' : 'Total Tonnage',
+          'label' : 'Total Tonnage (MT)',
           'insert_after' : 'total_net_weight',
           'is_custom_field' : 1,
           'is_system_generated' : 0,  
@@ -468,7 +468,7 @@ def after_migrate():
               'insert_after' : 'location',
               'is_custom_field': 1,
               'is_system_generated': 0,
-              'options': '\nDedicated / Company Owned\nHired'
+              'options': '\nDedicated / Company Owned\nHired\nTPL(Third Party Logistics)'
           },
           {
               'fieldname' : 'custom_rate_per_km',
@@ -495,6 +495,24 @@ def after_migrate():
             'fieldtype' : 'Datetime',
             'label' : 'Arrival Date & Time',
             'insert_after' : 'column_break_12',
+            'is_custom_field' : 1,
+            'is_system_generated' : 0,
+          },
+          {
+            'fieldname' : 'custom_vehicle_type',
+            'fieldtype' : 'Select',
+            'label' : 'Vehicle Type',
+            'insert_after' : 'license_plate',
+            'is_custom_field' : 1,
+            'is_system_generated' : 0,
+            'options' : '\nHired\nDedicated / Company Owned\nTPL(Third Party Logistics)',
+            'fetch_from' : "license_plate.cutom_vehicle_type"
+          },
+          {
+            'fieldname' : 'custom_trip_km',
+            'fieldtype' : 'Float',
+            'label' : 'Trip KM',
+            'insert_after' : 'odometer',
             'is_custom_field' : 1,
             'is_system_generated' : 0,
           }

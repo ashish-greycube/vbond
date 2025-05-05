@@ -9,6 +9,16 @@ frappe.query_reports["Dedicated Vehicle Loading Sheet"] = {
 			'options' : 'Vehicle',
 			'label' : __('Vehicle No'),
 			'reqd' : 1
-		}
+		},
+		{
+			'fieldname' : 'from_date',
+			'fieldtype' : 'Date',
+			'label' : __('From Date'),
+		},
+		{
+			'fieldname' : 'to_date',
+			'fieldtype' : 'Date',
+			'label' : __('To Date'),
+		},
 	]
 };

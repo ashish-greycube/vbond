@@ -113,11 +113,19 @@ def get_columns():
 	return columns
 
 def get_conditions(filters):
-	conditions = {}
-	for  key, value in filters.items():
-		if filters.get(key):
-			conditions[key] = value
-	return conditions
+	condition = ""
+	if filters.get('vehicle_number'):
+		condition += f"tvl.license_plate = '{filters.get('vehicle_number')}'"
+
+	if filters.get('from_date'):
+		condition += f" and tvl.date BETWEEN '{filters.get('from_date')}' AND '{frappe.utils.today()}'"
+
+	if filters.get('from_date') and filters.get('to_date'):
+		if filters.get('from_date') > filters.get('to_date'):
+			frappe.throw(f"From Date {filters.get('from_date')} Should Be Less Than To Date {filters.get('to_date')}")
+		condition += f" and tvl.date BETWEEN '{filters.get('from_date')}' AND '{filters.get('to_date')}'"
+
+	return condition
 
 def get_data(filters):
 	conditions = get_conditions(filters)
@@ -135,11 +143,11 @@ def get_data(filters):
 					FROM 
 						`tabVehicle Log` tvl
 					WHERE 
-						tvl.license_plate = '{conditions.get('vehicle_number')}'
+						{conditions}
 					ORDER BY
 						tvl.date;
 				''',
-				as_dict = 1)
+				as_dict = 1, debug = 1)
 	
 	for entry in vehicle_entries:
 		# Converting Weight Into Ton From KG

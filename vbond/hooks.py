@@ -151,7 +151,10 @@ doc_events = {
 	},
     "Sales Invoice" : {
         "before_save" : "vbond.api.calculate_transport_data",
-	}
+	},
+    "Vehicle Log" : {
+        "validate" : "vbond.api.calculate_trip_km"
+    }
 }
 
 # Scheduled Tasks

@@ -68,7 +68,7 @@ def get_data(filters, columns):
 					FROM 
 						`tabSales Invoice` tsi 
 					WHERE 
-						posting_date BETWEEN '{0}' AND '{1}'
+						posting_date BETWEEN '{0}' AND '{1}' AND tsi.docstatus != 2
 					GROUP BY tsi.custom_state; 
 				""".format(conditions.get('from_date'), conditions.get('to_date'))
 				, as_dict = 1)
@@ -98,16 +98,20 @@ def get_data(filters, columns):
 				total_tonnage = 0
 
 				# Traversing each invoice in data to fill values
-				for invoice in invoices:								
-					total_invoice_amounts = total_invoice_amounts + invoice.get('totalInvoiceValue')
-					total_transport_amounts = total_transport_amounts + invoice.get('totalTransoprtCost')
-				
-					total_tonnage = total_tonnage + invoice.get('totalNetWeight') / 1000
-					if total_invoice_amounts > 0:
+				for invoice in invoices:		
+					if invoice.get('custom_state') != None:						
+						total_invoice_amounts = total_invoice_amounts + invoice.get('totalInvoiceValue')
+						total_transport_amounts = total_transport_amounts + invoice.get('totalTransoprtCost')
+					
+					if invoice.get('custom_state') != None: 
+						total_tonnage = total_tonnage + invoice.get('totalNetWeight') / 1000
+
+					if total_invoice_amounts > 0 and invoice.get('custom_state') != None:
 						total_tp_cost_percent = (total_transport_amounts / total_invoice_amounts) * 100
+						print(total_tp_cost_percent)
 					else: total_tp_cost_percent = 0
 					
-					if invoice.get('totalVehicles') > 0:
+					if total_vehicles > 0:
 						curr_state_vehicle_percent = (invoice.get('totalVehicles') / total_vehicles) * 100
 					else: curr_state_vehicle_percent = 0
 					
@@ -151,10 +155,12 @@ def get_data(filters, columns):
 				if column.get('fieldname') == 'total_mtd':
 					if details[i] == 'TP Cost(%)':
 						col_data = (column.get('fieldname'), total_tp_cost_percent)
+						
 					elif details[i] == 'Cost Per Ton':
 						if total_tonnage > 0:
 							total_cpt = total_transport_amounts / total_tonnage
 							col_data = (column.get('fieldname'), total_cpt)
+							
 					else:
 						col_data = (column.get('fieldname'), total_mtd)
 					

@@ -127,3 +127,13 @@ def calculate_basic_amount(self, method):
             basic_item_amount = incoming_rate * qty
             basic_amount += basic_item_amount
         self.custom_basic_amount = basic_amount
+
+
+# Calculation Of Trip Km In Vehicle Log
+def calculate_trip_km(self, method):
+    current_odometer = self.odometer
+    last_odometer = self.last_odometer
+
+    if current_odometer > last_odometer:
+        current_trip_km = current_odometer - last_odometer
+        self.custom_trip_km = current_trip_km

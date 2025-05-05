@@ -147,6 +147,9 @@ def get_conditions(filters):
 
 	if filters.get('vehicle_type'):
 		condition += f"and tsi.custom_vehicle_type = '{filters.get('vehicle_type')}'"
+	
+	if filters.get('transporter'):
+		condition += f"and tsi.transporter = '{filters.get('transporter')}'"
 
 	return condition
 

@@ -38,6 +38,7 @@
    "options": "State VB"
   },
   {
+   "fetch_from": "destination.kms",
    "fieldname": "kms",
    "fieldtype": "Float",
    "label": "KMs"
@@ -110,7 +111,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-25 16:02:38.256031",
+ "modified": "2025-05-05 10:23:39.984425",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "Vbond Final Rate Card",
