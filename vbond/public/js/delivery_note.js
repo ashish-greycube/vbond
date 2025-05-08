@@ -15,6 +15,20 @@ frappe.ui.form.on("Delivery Note", {
         })
     },
 
+    custom_transport_destination: function(frm) {
+        let destination = frm.doc.custom_transport_destination
+        frappe.db.get_value(
+            doctype = "Destination VB",
+            filters = {
+                'name' : destination,
+            },
+            fieldname = ['kms']
+        ).then(r => {
+            let kms = r.message.kms
+            frm.set_value('custom_destination_distance', kms)
+        })
+    }
+
     // refresh(frm) {
     //     if (frm.doc.custom_vehicle_type == "Dedicated") {
     //         frm.set_df_property('custom_vehicle_number', 'reqd', 1)

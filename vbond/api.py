@@ -109,9 +109,25 @@ def calculate_transport_data(self, method):
             self.custom_destination_distance = distance
             self.custom_transport_cost = transport_cost
 
-            # Moving Vehicle Number From Details To Transfer Section
-            if self.doctype == "Delivery Note" or self.doctype == "Sales Invoice":
+    # Moving Vehicle Number From Details To Transfer Section
+    if vehicle_type == "Dedicated / Company Owned":
+        if self.vehicle_no == None:
+            if self.doctype == "Sales Order":
+                vehicle_num = self.custom_vehicle_number
+                self.vehicle_no = vehicle_num
+
+            elif self.doctype == "Delivery Note" or self.doctype == "Sales Invoice":
                 if self.vehicle_no == None:
+                    vehicle_num = self.custom_vehicle_number
+                    self.vehicle_no = vehicle_num
+
+    elif vehicle_type == "Hired" or vehicle_type == "TPL(Third Party Logistics)":
+            if self.doctype == "Sales Order":
+                if self.vehicle_no == None:
+                    vehicle_num = self.custom_hired_vehicle_number
+                    self.vehicle_no = vehicle_num
+
+            elif self.doctype == "Delivery Note" or self.doctype == "Sales Invoice":
                     vehicle_num = self.custom_hired_vehicle_number
                     self.vehicle_no = vehicle_num
                     self.custom_hired_vehicle_number = None
