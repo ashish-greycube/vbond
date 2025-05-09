@@ -339,7 +339,7 @@ def after_migrate():
         {
             'fieldname' : 'vehicle_no',
             'fieldtype' : 'Data',
-            'label' : 'Vehicle No',
+            'label' : 'Vehicle No(For Report)',
             'insert_after' : 'represents_company',
             'is_custom_field' : 1,
             'is_system_generated' : 0,
