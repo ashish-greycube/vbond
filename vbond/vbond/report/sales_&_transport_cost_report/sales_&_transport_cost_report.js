@@ -23,7 +23,7 @@ frappe.query_reports["Sales & Transport Cost Report"] = {
 			'fieldname' : 'vehicle_type',
 			'fieldtype' : 'Select',
 			'label' : __('Vehicle Type'),
-			'options' : '\nHired\nDedicated / Company Owned\nTPL(Third Party Logistics)',
+			'options' : '\nMarket\nDedicated / Company Owned\nTPL(Third Party Logistics)',
 		},
 		{
 			'fieldname' : 'transporter',

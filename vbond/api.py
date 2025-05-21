@@ -88,7 +88,7 @@ def calculate_transport_data(self, method):
             transport_cost = (transport_distance * transport_rate)
             self.custom_transport_cost = transport_cost
 
-    elif vehicle_type == "Hired":
+    elif vehicle_type == "Market":
         state = self.custom_state
         destination = self.custom_transport_destination
         kg_weight = self.total_net_weight
@@ -120,7 +120,7 @@ def calculate_transport_data(self, method):
                     vehicle_num = self.custom_vehicle_number
                     self.vehicle_no = vehicle_num
 
-    elif vehicle_type == "Hired" or vehicle_type == "TPL(Third Party Logistics)":
+    elif vehicle_type == "Market" or vehicle_type == "TPL(Third Party Logistics)":
             if self.doctype == "Sales Order":
                     vehicle_num = self.custom_hired_vehicle_number
                     self.vehicle_no = vehicle_num

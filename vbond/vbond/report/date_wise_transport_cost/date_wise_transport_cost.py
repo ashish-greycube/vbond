@@ -58,7 +58,7 @@ def get_data(filters, columns):
 	invoices = frappe.db.sql("""
 					SELECT 
 						tsi.custom_state,
-						COUNT(DISTINCT(tsi.custom_vehicle_number)) + COUNT(DISTINCT(tsi.vehicle_no)) + COUNT(DISTINCT(tsi.custom_hired_vehicle_number)) AS 'totalVehicles', 
+						COUNT(DISTINCT(tsi.vehicle_no)) AS 'totalVehicles', 
 						SUM(tsi.total) AS 'totalInvoiceValue', 
 						SUM(tsi.total_net_weight) AS 'totalNetWeight', 
 						SUM(tsi.custom_transport_cost) AS 'totalTransoprtCost'

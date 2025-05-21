@@ -297,10 +297,10 @@ def get_data(filters):
 				if detail.type == "Dedicated / Company Owned":
 					vehicle = dn_data[0].dedicated_vehicle
 
-				elif detail.type  == "Hired":
+				elif detail.type  == "Market":
 					vehicle = dn_data[0].hired_vehicle
 				else:
-					vehicle = dn_data[0].tplNo
+					vehicle = dn_data[0].hired_vehicle
 					
 			
 			# Main Data Rows

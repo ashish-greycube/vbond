@@ -47,7 +47,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Hired\nDedicated / Company Owned\nTPL(Third Party Logistics)',
+          'options' : 'Market\nDedicated / Company Owned\nTPL(Third Party Logistics)',
           'allow_on_submit' : 1
         },
         {
@@ -65,11 +65,11 @@ def after_migrate():
         {
           'fieldname' : 'custom_hired_vehicle_number',
           'fieldtype' : 'Data',
-          'label' : 'Vehicle No (Hired / Third Party Logistics)',
+          'label' : 'Vehicle No (Market / Third Party Logistics)',
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Hired" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"',
+          'depends_on': 'eval:doc.custom_vehicle_type=="Market" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"',
           'allow_on_submit' : 1
         },
         {
@@ -259,7 +259,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Hired\nDedicated / Company Owned\nTPL(Third Party Logistics)',
+          'options' : 'Market\nDedicated / Company Owned\nTPL(Third Party Logistics)',
           'allow_on_submit' : 1
         },
         {
@@ -277,11 +277,11 @@ def after_migrate():
         {
           'fieldname' : 'custom_hired_vehicle_number',
           'fieldtype' : 'Data',
-          'label' : 'Vehicle No (Hired / Third Party Logistics)',
+          'label' : 'Vehicle No (Market / Third Party Logistics)',
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Hired" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"',
+          'depends_on': 'eval:doc.custom_vehicle_type=="Market" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"',
           'allow_on_submit' : 1
         },
         {
@@ -409,7 +409,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Hired\nDedicated / Company Owned\nTPL(Third Party Logistics)',
+          'options' : 'Market\nDedicated / Company Owned\nTPL(Third Party Logistics)',
           'allow_on_submit' : 1
         },
         {
@@ -427,11 +427,11 @@ def after_migrate():
         {
           'fieldname' : 'custom_hired_vehicle_number',
           'fieldtype' : 'Data',
-          'label' : 'Vehicle No (Hired / Third Party Logistics)',
+          'label' : 'Vehicle No (Market / Third Party Logistics)',
           'insert_after' : 'custom_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'depends_on': 'eval:doc.custom_vehicle_type=="Hired" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"',
+          'depends_on': 'eval:doc.custom_vehicle_type=="Market" || doc.custom_vehicle_type=="TPL(Third Party Logistics)"',
           'allow_on_submit' : 1
         },
         {
@@ -513,6 +513,26 @@ def after_migrate():
               'insert_after' : 'employee',
               'is_custom_field': 1,
               'is_system_generated': 0,
+          }, 
+          {
+              'fieldname' : 'custom_roof_type',
+              'fieldtype' : 'Select',
+              'label' : 'Roof Type',
+              'insert_after' : 'cutom_vehicle_type',
+              'is_custom_field': 1,
+              'is_system_generated': 0,
+              'options': '\nOpen\nClosed',
+              'in_standard_filter': 1
+          }, 
+          {
+              'fieldname' : 'custom_vehicle_capacity',
+              'fieldtype' : 'Select',
+              'label' : 'Vehicle Capacity(Ton)',
+              'insert_after' : 'custom_rate_per_km',
+              'is_custom_field': 1,
+              'is_system_generated': 0,
+              'options': '\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12',
+              'in_standard_filter': 1
           } 
       ],
 

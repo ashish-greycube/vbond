@@ -210,10 +210,10 @@ def get_data(filters):
 			vehicle_num = ''
 			if invoice.type == 'Dedicated / Company Owned':
 				vehicle_num = invoice.dedicatedNo
-			elif invoice.type == 'Hired':
+			elif invoice.type == 'Market':
 				vehicle_num = invoice.hiredNo
 			else:
-				vehicle_num = invoice.tplNo
+				vehicle_num = invoice.hiredNo
 
 			row = frappe._dict({
 				'date' : invoice.date,
