@@ -47,7 +47,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Market\nDedicated / Company Owned\nTPL(Third Party Logistics)',
+          'options' : '\nMarket\nDedicated / Company Owned\nTPL(Third Party Logistics)',
           'allow_on_submit' : 1
         },
         {
@@ -259,7 +259,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Market\nDedicated / Company Owned\nTPL(Third Party Logistics)',
+          'options' : '\nMarket\nDedicated / Company Owned\nTPL(Third Party Logistics)',
           'allow_on_submit' : 1
         },
         {
@@ -409,7 +409,7 @@ def after_migrate():
           'insert_after' : 'custom_dest_column_break',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'options' : 'Market\nDedicated / Company Owned\nTPL(Third Party Logistics)',
+          'options' : '\nMarket\nDedicated / Company Owned\nTPL(Third Party Logistics)',
           'allow_on_submit' : 1
         },
         {
