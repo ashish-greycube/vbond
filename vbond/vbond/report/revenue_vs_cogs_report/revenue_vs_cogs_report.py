@@ -50,11 +50,14 @@ def execute(filters=None):
         tmp = list(
             filter(lambda x: x.get("account") == filters.get("income_account"), income)
         )
-        tmp[0]["parent_account"] = income[0]["account"]
-        for d in income:
-            for period in period_list:
-                d[period.key] = tmp[0][period.key]
-        income = [income[0]] + tmp + income[-2:]
+        if len(tmp) > 0:
+            tmp[0]["parent_account"] = income[0]["account"]
+            for d in income:
+                for period in period_list:
+                    d[period.key] = tmp[0][period.key]
+            income = [income[0]] + tmp + income[-2:]
+        else:
+            frappe.msgprint(f"Income Account {frappe.bold(filters.get("income_account"))} Not Present In Entries")
 
     if filters.get("expense_account"):
         tmp = list(
@@ -62,11 +65,14 @@ def execute(filters=None):
                 lambda x: x.get("account") == filters.get("expense_account"), expense
             )
         )
-        tmp[0]["parent_account"] = expense[0]["account"]
-        for d in expense:
-            for period in period_list:
-                d[period.key] = tmp[0][period.key]
-        expense = [expense[0]] + tmp + expense[-2:]
+        if len(tmp) > 0:
+            tmp[0]["parent_account"] = expense[0]["account"]
+            for d in expense:
+                for period in period_list:
+                    d[period.key] = tmp[0][period.key]
+            expense = [expense[0]] + tmp + expense[-2:]
+        else:
+            frappe.msgprint(f"Expense Account {frappe.bold(filters.get("expense_account"))} Not Present In Entries")
 
     net_profit_loss = get_net_profit_loss(
         income, expense, period_list, filters.company, filters.presentation_currency

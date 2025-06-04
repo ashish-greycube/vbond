@@ -33,3 +33,16 @@ frappe.query_reports["Revenue vs COGS Report"]["filters"].push({
 	default: 1,
 });
 
+frappe.query_reports["Revenue vs COGS Report"]["filters"].push({
+	"fieldname": "income_account",
+	"label": __("Income Account"),
+	"fieldtype": "Link",
+	"options": "Account"
+});
+
+frappe.query_reports["Revenue vs COGS Report"]["filters"].push({
+	"fieldname": "expense_account",
+	"label": __("Expense Account"),
+	"fieldtype": "Link",
+	"options": "Account"
+});
