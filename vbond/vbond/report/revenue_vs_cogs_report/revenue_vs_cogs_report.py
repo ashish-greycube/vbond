@@ -57,7 +57,7 @@ def execute(filters=None):
                     d[period.key] = tmp[0][period.key]
             income = [income[0]] + tmp + income[-2:]
         else:
-            frappe.msgprint(f"Income Account {frappe.bold(filters.get("income_account"))} Not Present In Entries")
+            frappe.msgprint("Income Account {0} Not Present In Entries".format(frappe.bold(filters.get("income_account"))))
 
     if filters.get("expense_account"):
         tmp = list(
@@ -72,7 +72,7 @@ def execute(filters=None):
                     d[period.key] = tmp[0][period.key]
             expense = [expense[0]] + tmp + expense[-2:]
         else:
-            frappe.msgprint(f"Expense Account {frappe.bold(filters.get("expense_account"))} Not Present In Entries")
+            frappe.msgprint("Expense Account {0} Not Present In Entries".format(frappe.bold(filters.get("expense_account"))))
 
     net_profit_loss = get_net_profit_loss(
         income, expense, period_list, filters.company, filters.presentation_currency
