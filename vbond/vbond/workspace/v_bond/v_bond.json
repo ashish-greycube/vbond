@@ -16,85 +16,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Reports",
-   "link_count": 7,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Daily Transport Cost",
-   "link_count": 0,
-   "link_to": "Daily Transport Cost",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Monthly Transport Cost",
-   "link_count": 0,
-   "link_to": "Monthly Transport Cost",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Date Wise Transport Cost",
-   "link_count": 0,
-   "link_to": "Date Wise Transport Cost",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Revenue vs COGS Report",
-   "link_count": 0,
-   "link_to": "Revenue vs COGS Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales & Transport Cost Report",
-   "link_count": 0,
-   "link_to": "Sales & Transport Cost Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Logistics Daily Dispatch Details",
-   "link_count": 0,
-   "link_to": "Logistics Daily Dispatch Details",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Dedicated Vehicle Loading Sheet",
-   "link_count": 0,
-   "link_to": "Dedicated Vehicle Loading Sheet",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Transaction",
    "link_count": 4,
    "link_type": "DocType",
@@ -189,9 +110,98 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 8,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Daily Transport Cost",
+   "link_count": 0,
+   "link_to": "Daily Transport Cost",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Monthly Transport Cost",
+   "link_count": 0,
+   "link_to": "Monthly Transport Cost",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Date Wise Transport Cost",
+   "link_count": 0,
+   "link_to": "Date Wise Transport Cost",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Revenue vs COGS Report",
+   "link_count": 0,
+   "link_to": "Revenue vs COGS Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales & Transport Cost Report",
+   "link_count": 0,
+   "link_to": "Sales & Transport Cost Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Logistics Daily Dispatch Details",
+   "link_count": 0,
+   "link_to": "Logistics Daily Dispatch Details",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Dedicated Vehicle Loading Sheet",
+   "link_count": 0,
+   "link_to": "Dedicated Vehicle Loading Sheet",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Ageing Report",
+   "link_count": 0,
+   "link_to": "Ageing Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2025-04-23 15:07:45.779172",
+ "modified": "2025-06-10 12:33:37.900255",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "V-BOND",
@@ -201,7 +211,7 @@
  "public": 1,
  "quick_lists": [],
  "roles": [],
- "sequence_id": 39.0,
+ "sequence_id": 34.0,
  "shortcuts": [],
  "title": "V-BOND"
 }
