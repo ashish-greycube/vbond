@@ -183,7 +183,7 @@ def get_data(filters):
 		# Calculating Level 2 Data
 		# Adding level2 data and its child nodes with sales persons
 		else:
-			if sp['parent'] == "Head  Sales and Marketing":
+			if sp['parent'] == "National Head  Sales and Marketing":
 				doctype = 'Sales Person'
 				name = sp['value']
 				order_by = 'rgt desc'
