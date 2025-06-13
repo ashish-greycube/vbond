@@ -137,11 +137,20 @@ def get_data(filters):
 			f"SELECT sales_person as sp FROM `tabSales Team` WHERE parenttype = 'Customer' AND parent = '{d['party']}';", as_dict=True
 		)
 		d['sales_person'] = sales_person[0]['sp'] if sales_person != [] else None
-	# Final Output
+
+	# Final Output Calculation
 	final_output = []
+
+	# Modifying Sales Person Tree View List Data For Proper Formatting
+	for i in range(len(sales_person_list)):
+		if sales_person_list[i]['parent'] == 'Sales Team' and sales_person_list[i]['expandable'] == 0:
+			element = sales_person_list.pop(i)
+			sales_person_list.append(element)
+	
 	for sp in sales_person_list:
 		total_outstanding = 0
 		r1total = r2total = r3total = r4total = r5total = r6total = r7total = r8total = 0
+		
 		# Calculating Level 1 Data
 		# If element is group node than only create its row
 		if sp['parent'] == 'Sales Team' and sp['expandable'] == 1:
@@ -193,7 +202,7 @@ def get_data(filters):
 					final_output.append(new_fr) 
 
 				amnts = []
-				amnts.append({ 'parent' : sp['parent'], 'title':sp['value'], 'amount':0, 'r1t' : 0, 'r2t':0, 'r3t':0,'r4t': 0, 'r5t':0, 'r6t':0, 'r7t':0, 'r8t': 0 })
+				amnts.append({ 'parent' : sp['parent'], 'title':sp['value'], 'amount':0, 'r1t' : 0, 'r2t':0, 'r3t':0,'r4t': 0, 'r5t':0, 'r6t':0, 'r7t':0, 'r8t': 0, })
 				for child in childs:
 					totals = 0
 					range1total = range2total = range3total = range4total = range5total = range6total = range7total = range8total = 0
@@ -274,7 +283,7 @@ def get_data(filters):
 							amnt['r7t'] = amnt['r7t'] + cur_r7t
 							amnt['r8t'] = amnt['r8t'] + cur_r8t
 							unique_total.append({'title': up, 'total': amnt['amount'] or cur_amt_total, 'range1' : amnt['r1t'], 'range2':amnt['r2t'], 'range3':amnt['r3t'], 'range4':amnt['r4t'], 'range5':amnt['r5t'], 'range6':amnt['r6t'], 'range7':amnt['r7t'], 'range8':amnt['r8t']})
-				# print(amnts)
+				
 				for amnt in amnts:
 					title = amnt['title']
 					isExist = False
@@ -299,7 +308,36 @@ def get_data(filters):
 							fr['range6'] = ut['range6']
 							fr['range7'] = ut['range7']
 							fr['range8'] = ut['range8']
-				# print(unique_total)
+				
+				houtstanding = hr1t = hr2t = hr3t = hr4t = hr5t = hr6t = hr7t = hr8t = 0
+				for fr in final_output:
+					if 'level' in fr and fr['level'] == 1:
+						houtstanding = houtstanding + fr['pending_bills']
+						hr1t = hr1t + fr['range1']
+						hr2t = hr2t + fr['range2']
+						hr3t = hr3t + fr['range3']
+						hr4t = hr4t + fr['range4']
+						hr5t = hr5t + fr['range5']
+						hr6t = hr6t + fr['range6']
+						hr7t = hr7t + fr['range7']
+						hr8t = hr8t + fr['range8']
+
+				for fr in final_output:		
+					if fr['particulars'] == 'National Head  Sales and Marketing' and fr['level'] == 0:
+						fr.update({
+							'pending_bills' : houtstanding,
+							'range1' : hr1t,
+							'range2' : hr2t,
+							'range3' : hr3t,
+							'range4' : hr4t,
+							'range5' : hr5t,
+							'range6' : hr6t,
+							'range7' : hr7t,
+							'range8' : hr8t
+						})
+
+
+
 	for fr in final_output:
 		for data in ars_data:
 			if fr['particulars'] == data['party']:
@@ -313,5 +351,5 @@ def get_data(filters):
 				fr['range6'] = data['range6'] if 'range6' in  data else 0
 				fr['range7'] = data['range7'] if 'range7' in  data else 0
 				fr['range8'] = data['range8'] if 'range8' in  data else 0
-	# print(final_output)
+	
 	return final_output	
