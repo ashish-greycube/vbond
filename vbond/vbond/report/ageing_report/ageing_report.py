@@ -35,6 +35,13 @@ def get_columns():
 			'width': 400
 		},
 		{
+			'fieldname': 'customer',
+			'fieldtype': 'Link',
+			'label': _('Customer'),
+			'options' : 'Customer',
+			'width': 200
+		},
+		{
 			'fieldname': 'pending_bills',
 			'fieldtype': 'Float',
 			'label': _('Pending Bills'),
@@ -137,26 +144,27 @@ def get_data(filters):
 			f"SELECT sales_person as sp FROM `tabSales Team` WHERE parenttype = 'Customer' AND parent = '{d['party']}';", as_dict=True
 		)
 		d['sales_person'] = sales_person[0]['sp'] if sales_person != [] else None
-
+	
 	# Final Output Calculation
 	final_output = []
 
 	# Modifying Sales Person Tree View List Data For Proper Formatting
-	for i in range(len(sales_person_list)):
-		if sales_person_list[i]['parent'] == 'Sales Team' and sales_person_list[i]['expandable'] == 0:
+	for i in range(1, len(sales_person_list)):
+		if sales_person_list[i]['parent'] == 'Sales Team' and (sales_person_list[i]['expandable'] == 0 or sales_person_list[i]['expandable'] == 1):
 			element = sales_person_list.pop(i)
 			sales_person_list.append(element)
 	
 	for sp in sales_person_list:
 		total_outstanding = 0
 		r1total = r2total = r3total = r4total = r5total = r6total = r7total = r8total = 0
-		
+
 		# Calculating Level 1 Data
 		# If element is group node than only create its row
 		if sp['parent'] == 'Sales Team' and sp['expandable'] == 1:
 			new_fr = { 'particulars' : sp['value'], 'level' : 0,}
 			if new_fr not in final_output:
 				final_output.append(new_fr)
+
 
 		# If not group node then create its row and find its customers
 		elif sp['parent'] == 'Sales Team' and sp['expandable'] == 0:
@@ -189,6 +197,7 @@ def get_data(filters):
 					fr['range6'] = 	r6total 
 					fr['range7'] = 	r7total 
 					fr['range8'] = 	r8total 
+
 		# Calculating Level 2 Data
 		# Adding level2 data and its child nodes with sales persons
 		else:
@@ -230,7 +239,7 @@ def get_data(filters):
 								final_output.append(new_fr) 
 							for data in ars_data:
 								if data['sales_person'] == child:
-									new_fr = { 'particulars' : data['party']}
+									new_fr = { 'particulars' : data['party'], 'customer' : data['party'], 'parent' : child}
 									if new_fr not in final_output:
 										final_output.append(new_fr)
 										totals = totals + data['outstanding']
@@ -255,7 +264,7 @@ def get_data(filters):
 						unique_parents.append(parent)
 
 				unique_parents = unique_parents[::-1]
-
+				
 				for up in unique_parents:
 					cur_amt_total = 0
 					cur_r1t = cur_r2t = cur_r3t = cur_r4t = cur_r5t = cur_r6t = cur_r7t = cur_r8t = 0
@@ -298,7 +307,6 @@ def get_data(filters):
 				for fr in final_output:
 					for ut in unique_total:
 						if fr['particulars'] == ut['title']:
-							# print(ut)
 							fr['pending_bills'] = ut['total']
 							fr['range1'] = ut['range1']
 							fr['range2'] = ut['range2']
@@ -336,6 +344,7 @@ def get_data(filters):
 							'range8' : hr8t
 						})
 
+		
 
 
 	for fr in final_output:
@@ -352,4 +361,50 @@ def get_data(filters):
 				fr['range7'] = data['range7'] if 'range7' in  data else 0
 				fr['range8'] = data['range8'] if 'range8' in  data else 0
 	
-	return final_output	
+	
+	sorted_sp_parent = spt[0]['parent']
+	sorted_sp = []
+	def get_sorted_sp(sorted_sp_parent, spt, sorted_sp):
+		for sp in spt:
+			if sp['parent'] == sorted_sp_parent:
+				if len(sp['data']) > 0:
+					for d in sp['data']:
+						sorted_sp.append(d['value'])
+						sorted_sp_parent = d['value']
+						get_sorted_sp(sorted_sp_parent, spt, sorted_sp)
+		return sorted_sp
+	out = get_sorted_sp(sorted_sp_parent, spt, sorted_sp)
+
+	def check_is_present_or_not(output_report_data, fr, o):
+		isPresent = False
+		for output in output_report_data:
+			if 'parent' in output:
+				if output['parent'] == o and output['particulars'] == fr['particulars']:
+					isPresent = True
+					break
+		return isPresent
+
+	def check_particulars(output_report_data, fr, o):
+		isAvailable = False
+		for output in output_report_data:
+			if output['particulars'] == fr['particulars']:
+				isAvailable = True
+				break
+		return isAvailable
+
+	output_report_data = []
+	for o in out:
+		for fr in final_output:
+			if fr['particulars'] == o:
+				r = check_particulars(output_report_data, fr, o)
+				if r == False:
+					output_report_data.append(fr)
+
+			elif 'parent' in fr:
+				if fr['parent'] == o:
+					res = check_is_present_or_not(output_report_data, fr, o)
+
+					if res == False:
+						output_report_data.append(fr)
+
+	return output_report_data	
