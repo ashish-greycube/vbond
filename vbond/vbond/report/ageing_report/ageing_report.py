@@ -147,7 +147,7 @@ def get_data(filters):
 	
 	# Final Output Calculation
 	final_output = []
-
+	amnts = []
 	# Modifying Sales Person Tree View List Data For Proper Formatting
 	for i in range(1, len(sales_person_list)):
 		if sales_person_list[i]['parent'] == 'Sales Team' and (sales_person_list[i]['expandable'] == 0 or sales_person_list[i]['expandable'] == 1):
@@ -200,8 +200,7 @@ def get_data(filters):
 
 		# Calculating Level 2 Data
 		# Adding level2 data and its child nodes with sales persons
-		else:
-			if sp['parent'] == "National Head  Sales and Marketing":
+		elif sp['parent'] == "National Head  Sales and Marketing":
 				doctype = 'Sales Person'
 				name = sp['value']
 				order_by = 'rgt desc'
@@ -210,7 +209,7 @@ def get_data(filters):
 				if new_fr not in final_output: 
 					final_output.append(new_fr) 
 
-				amnts = []
+				
 				amnts.append({ 'parent' : sp['parent'], 'title':sp['value'], 'amount':0, 'r1t' : 0, 'r2t':0, 'r3t':0,'r4t': 0, 'r5t':0, 'r6t':0, 'r7t':0, 'r8t': 0, })
 				for child in childs:
 					totals = 0
@@ -253,96 +252,132 @@ def get_data(filters):
 										range8total = range8total + data['range8'] if 'range8' in  data else 0
 							amnts.append({ 'parent' : sps['parent'], 'title':child, 'amount':totals, 'r1t' : range1total, 'r2t':range2total, 'r3t':range3total,'r4t': range4total, 'r5t':range5total, 'r6t':range6total, 'r7t':range7total, 'r8t': range8total })
 			
-				# roll up calculation of total values
-				unique_total = []
-				unique_parents = []
+		if sp['parent'] == 'Sales Team' and sp['value'] == 'PROJECTS':
+			
+			new_fr = { 'particulars' : sp['value'], 'level' : 0 }
+			if new_fr not in final_output:
+				final_output.append(new_fr)
+			amnts.append({ 'parent' : sp['parent'], 'title':sp['value'], 'amount':0, 'r1t' : 0, 'r2t':0, 'r3t':0,'r4t': 0, 'r5t':0, 'r6t':0, 'r7t':0, 'r8t': 0, })
+			
+			doctype = 'Sales Person'
+			name = sp['value']
+			order_by = 'rgt desc'
+			project_childs = get_descendants_of(doctype, name,order_by)
 
-				# Unique Level 2 Data Total
+			for pr_child in project_childs:
+				pr1total = pr2total = pr3total = pr4total = pr5total = pr6total = pr7total = pr8total = 0
+				pr_totals = 0
+				new_fr = { 'particulars': pr_child, 'level' : 2 }
+				if new_fr not in final_output:
+					final_output.append(new_fr)
+
+				for data in ars_data:
+					if data['sales_person'] == pr_child:
+						new_fr = { 'particulars': data['party'], 'customer' : data['party'],  'parent': pr_child }
+						if new_fr not in final_output:
+							final_output.append(new_fr)
+							pr_totals = pr_totals + data['outstanding']
+							pr1total = pr1total + data['range1'] if 'range1' in  data else 0
+							pr2total = pr2total + data['range2'] if 'range2' in  data else 0
+							pr3total = pr3total + data['range3'] if 'range3' in  data else 0
+							pr4total = pr4total + data['range4'] if 'range4' in  data else 0
+							pr5total = pr5total + data['range5'] if 'range5' in  data else 0
+							pr6total = pr6total + data['range6'] if 'range6' in  data else 0
+							pr7total = pr7total + data['range7'] if 'range7' in  data else 0
+							pr8total = pr8total + data['range8'] if 'range8' in  data else 0
+				amnts.append({ 'parent' :sp['value'], 'title':pr_child, 'amount':pr_totals, 'r1t' : pr1total, 'r2t':pr2total, 'r3t':pr3total,'r4t': pr4total, 'r5t':pr5total, 'r6t':pr6total, 'r7t':pr7total, 'r8t': pr8total })
+
+			# roll up calculation of total values
+			unique_total = []
+			unique_parents = []
+
+			# Unique Level 2 Data Total
+			for amnt in amnts:
+				parent = amnt['parent']
+				if parent not in unique_parents:
+					unique_parents.append(parent)
+
+			unique_parents = unique_parents[::-1]
+			
+			for up in unique_parents:
+				cur_amt_total = 0
+				cur_r1t = cur_r2t = cur_r3t = cur_r4t = cur_r5t = cur_r6t = cur_r7t = cur_r8t = 0
 				for amnt in amnts:
-					parent = amnt['parent']
-					if parent not in unique_parents:
-						unique_parents.append(parent)
-
-				unique_parents = unique_parents[::-1]
-				
-				for up in unique_parents:
-					cur_amt_total = 0
-					cur_r1t = cur_r2t = cur_r3t = cur_r4t = cur_r5t = cur_r6t = cur_r7t = cur_r8t = 0
-					for amnt in amnts:
-						if amnt['parent'] == up:
-							cur_amt_total = cur_amt_total + amnt['amount']
-							cur_r1t = cur_r1t + amnt['r1t']
-							cur_r2t = cur_r2t + amnt['r2t']
-							cur_r3t = cur_r3t + amnt['r3t']
-							cur_r4t = cur_r4t + amnt['r4t']
-							cur_r5t = cur_r5t + amnt['r5t']
-							cur_r6t = cur_r6t + amnt['r6t']
-							cur_r7t = cur_r7t + amnt['r7t']
-							cur_r8t = cur_r8t + amnt['r8t']
-					for amnt in amnts:
-						if amnt['title'] == up:
-							# print(amnt)
-							amnt['amount'] = amnt['amount'] + cur_amt_total
-							amnt['r1t'] = amnt['r1t'] + cur_r1t
-							amnt['r2t'] = amnt['r2t'] + cur_r2t
-							amnt['r3t'] = amnt['r3t'] + cur_r3t
-							amnt['r4t'] = amnt['r4t'] + cur_r4t
-							amnt['r5t'] = amnt['r5t'] + cur_r5t
-							amnt['r6t'] = amnt['r6t'] + cur_r6t
-							amnt['r7t'] = amnt['r7t'] + cur_r7t
-							amnt['r8t'] = amnt['r8t'] + cur_r8t
-							unique_total.append({'title': up, 'total': amnt['amount'] or cur_amt_total, 'range1' : amnt['r1t'], 'range2':amnt['r2t'], 'range3':amnt['r3t'], 'range4':amnt['r4t'], 'range5':amnt['r5t'], 'range6':amnt['r6t'], 'range7':amnt['r7t'], 'range8':amnt['r8t']})
-				
+					if amnt['parent'] == up:
+						cur_amt_total = cur_amt_total + amnt['amount']
+						cur_r1t = cur_r1t + amnt['r1t']
+						cur_r2t = cur_r2t + amnt['r2t']
+						cur_r3t = cur_r3t + amnt['r3t']
+						cur_r4t = cur_r4t + amnt['r4t']
+						cur_r5t = cur_r5t + amnt['r5t']
+						cur_r6t = cur_r6t + amnt['r6t']
+						cur_r7t = cur_r7t + amnt['r7t']
+						cur_r8t = cur_r8t + amnt['r8t']
 				for amnt in amnts:
-					title = amnt['title']
-					isExist = False
-					for ut in unique_total:
-						if ut['title'] == title:
-							isExist = True
-					if isExist == False:
-						unique_total.append({'title': title, 'total': amnt['amount'], 'range1' : amnt['r1t'], 'range2':amnt['r2t'], 'range3':amnt['r3t'], 'range4':amnt['r4t'], 'range5':amnt['r5t'], 'range6':amnt['r6t'], 'range7':amnt['r7t'], 'range8':amnt['r8t']})
-				
-				
-				# Each Sales Persons Total Calculation
-				for fr in final_output:
-					for ut in unique_total:
-						if fr['particulars'] == ut['title']:
-							fr['pending_bills'] = ut['total']
-							fr['range1'] = ut['range1']
-							fr['range2'] = ut['range2']
-							fr['range3'] = ut['range3']
-							fr['range4'] = ut['range4']
-							fr['range5'] = ut['range5']
-							fr['range6'] = ut['range6']
-							fr['range7'] = ut['range7']
-							fr['range8'] = ut['range8']
-				
-				houtstanding = hr1t = hr2t = hr3t = hr4t = hr5t = hr6t = hr7t = hr8t = 0
-				for fr in final_output:
-					if 'level' in fr and fr['level'] == 1:
-						houtstanding = houtstanding + fr['pending_bills']
-						hr1t = hr1t + fr['range1']
-						hr2t = hr2t + fr['range2']
-						hr3t = hr3t + fr['range3']
-						hr4t = hr4t + fr['range4']
-						hr5t = hr5t + fr['range5']
-						hr6t = hr6t + fr['range6']
-						hr7t = hr7t + fr['range7']
-						hr8t = hr8t + fr['range8']
+					if amnt['title'] == up:
+						# print(amnt)
+						amnt['amount'] = amnt['amount'] + cur_amt_total
+						amnt['r1t'] = amnt['r1t'] + cur_r1t
+						amnt['r2t'] = amnt['r2t'] + cur_r2t
+						amnt['r3t'] = amnt['r3t'] + cur_r3t
+						amnt['r4t'] = amnt['r4t'] + cur_r4t
+						amnt['r5t'] = amnt['r5t'] + cur_r5t
+						amnt['r6t'] = amnt['r6t'] + cur_r6t
+						amnt['r7t'] = amnt['r7t'] + cur_r7t
+						amnt['r8t'] = amnt['r8t'] + cur_r8t
+						unique_total.append({'title': up, 'total': amnt['amount'] or cur_amt_total, 'range1' : amnt['r1t'], 'range2':amnt['r2t'], 'range3':amnt['r3t'], 'range4':amnt['r4t'], 'range5':amnt['r5t'], 'range6':amnt['r6t'], 'range7':amnt['r7t'], 'range8':amnt['r8t']})
+			
+			for amnt in amnts:
+				title = amnt['title']
+				isExist = False
+				for ut in unique_total:
+					if ut['title'] == title:
+						isExist = True
+				if isExist == False:
+					unique_total.append({'title': title, 'total': amnt['amount'], 'range1' : amnt['r1t'], 'range2':amnt['r2t'], 'range3':amnt['r3t'], 'range4':amnt['r4t'], 'range5':amnt['r5t'], 'range6':amnt['r6t'], 'range7':amnt['r7t'], 'range8':amnt['r8t']})
+			
+			
+			# Each Sales Persons Total Calculation
+			for fr in final_output:
+				for ut in unique_total:
+					if fr['particulars'] == ut['title']:
+						fr['pending_bills'] = ut['total']
+						fr['range1'] = ut['range1']
+						fr['range2'] = ut['range2']
+						fr['range3'] = ut['range3']
+						fr['range4'] = ut['range4']
+						fr['range5'] = ut['range5']
+						fr['range6'] = ut['range6']
+						fr['range7'] = ut['range7']
+						fr['range8'] = ut['range8']
+			
+			houtstanding = hr1t = hr2t = hr3t = hr4t = hr5t = hr6t = hr7t = hr8t = 0
+			for fr in final_output:
+				if 'level' in fr and fr['level'] == 1:
+					print(fr)
+					houtstanding = houtstanding + fr['pending_bills']
+					hr1t = hr1t + fr['range1']
+					hr2t = hr2t + fr['range2']
+					hr3t = hr3t + fr['range3']
+					hr4t = hr4t + fr['range4']
+					hr5t = hr5t + fr['range5']
+					hr6t = hr6t + fr['range6']
+					hr7t = hr7t + fr['range7']
+					hr8t = hr8t + fr['range8']
 
-				for fr in final_output:		
-					if fr['particulars'] == 'National Head  Sales and Marketing' and fr['level'] == 0:
-						fr.update({
-							'pending_bills' : houtstanding,
-							'range1' : hr1t,
-							'range2' : hr2t,
-							'range3' : hr3t,
-							'range4' : hr4t,
-							'range5' : hr5t,
-							'range6' : hr6t,
-							'range7' : hr7t,
-							'range8' : hr8t
-						})
+			for fr in final_output:		
+				if fr['particulars'] == 'National Head  Sales and Marketing' and fr['level'] == 0:
+					fr.update({
+						'pending_bills' : houtstanding,
+						'range1' : hr1t,
+						'range2' : hr2t,
+						'range3' : hr3t,
+						'range4' : hr4t,
+						'range5' : hr5t,
+						'range6' : hr6t,
+						'range7' : hr7t,
+						'range8' : hr8t
+					})
 
 		
 
