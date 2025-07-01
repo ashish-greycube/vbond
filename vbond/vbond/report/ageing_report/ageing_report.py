@@ -5,8 +5,8 @@ import frappe
 from frappe import _
 from frappe.utils import today
 from erpnext import get_default_company
-from frappe.desk.treeview import get_all_nodes
-from frappe.utils.nestedset import get_descendants_of
+from frappe.desk.treeview import get_all_nodes, get_children
+from frappe.utils.nestedset import get_descendants_of, get_root_of
 from erpnext.accounts.report.accounts_receivable_summary.accounts_receivable_summary import execute as ars_execute
 
 def execute(filters=None):
@@ -107,6 +107,8 @@ def get_conditions(filters):
 
 def get_data(filters):
 	conditions = get_conditions(filters)
+	root = get_root_of('Sales Person')
+	root_nodes = get_children('Sales Person',root)
 
 	# Accounts Receivable Summary Report Data
 	ars_filters = {
@@ -200,7 +202,7 @@ def get_data(filters):
 
 		# Calculating Level 2 Data
 		# Adding level2 data and its child nodes with sales persons
-		elif sp['parent'] == "National Head  Sales and Marketing":
+		elif sp['parent'] == root_nodes[0]['title']:
 				doctype = 'Sales Person'
 				name = sp['value']
 				order_by = 'rgt desc'
@@ -252,7 +254,7 @@ def get_data(filters):
 										range8total = range8total + data['range8'] if 'range8' in  data else 0
 							amnts.append({ 'parent' : sps['parent'], 'title':child, 'amount':totals, 'r1t' : range1total, 'r2t':range2total, 'r3t':range3total,'r4t': range4total, 'r5t':range5total, 'r6t':range6total, 'r7t':range7total, 'r8t': range8total })
 			
-		if sp['parent'] == 'Sales Team' and sp['value'] == 'PROJECTS':
+		if sp['parent'] == 'Sales Team' and (sp['value'] == root_nodes[1]['title']):
 			
 			new_fr = { 'particulars' : sp['value'], 'level' : 0 }
 			if new_fr not in final_output:
@@ -366,7 +368,7 @@ def get_data(filters):
 					hr8t = hr8t + fr['range8']
 
 			for fr in final_output:		
-				if fr['particulars'] == 'National Head  Sales and Marketing' and fr['level'] == 0:
+				if fr['particulars'] == 'DISTRIBUTORS' and fr['level'] == 0:
 					fr.update({
 						'pending_bills' : houtstanding,
 						'range1' : hr1t,
