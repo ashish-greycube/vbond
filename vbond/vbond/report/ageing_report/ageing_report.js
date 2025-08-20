@@ -22,6 +22,12 @@ frappe.query_reports["Ageing Report"] = {
 			'label': 'Posting Date',
 			'default': 'Today'
 		},
+		{
+			'fieldname': 'upto_level',
+			'fieldtype': 'Select',
+			'label': 'Up To',
+			'options': '\n0\n1\n2\n3\n4'
+		}
 	],
 
 	formatter: function (value, row, column, data, default_formatter, filter) {
@@ -33,10 +39,16 @@ frappe.query_reports["Ageing Report"] = {
 			value = `<div style="color:green; font-weight:bold;">${value}</div>`
 		}
 		if (data.level == 2) {
-			value = `<div style="color:blue; font-weight:bold;">${value}</div>`
+			value = `<div style="color:violet; font-weight:bold;">${value}</div>`
 		}
 		if (data.level == 3) {
 			value = `<div style="color:orange; font-weight:bold;">${value}</div>`
+		}
+		if (data.level == 4) {
+			value = `<div style="color:#f57842; font-weight:bold;">${value}</div>`
+		}
+		if (data.particulars == 'Total') {
+			value = value.bold()
 		}
 		return value;
 	},

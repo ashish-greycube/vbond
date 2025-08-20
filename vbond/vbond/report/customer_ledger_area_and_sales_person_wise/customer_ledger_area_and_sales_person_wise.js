@@ -8,21 +8,21 @@ frappe.query_reports["Customer Ledger Area and Sales Person Wise"] = {
 			'fieldtype': 'Link',
 			'label': __('Company'),
 			'default': frappe.defaults.get_user_default("Company"),
-			'options' : 'Company'
+			'options': 'Company'
 		},
 		{
 			'fieldname': 'from_date',
 			'fieldtype': 'Date',
 			'label': 'From Date',
 			'default': frappe.datetime.add_months(frappe.datetime.get_today(), -1),
-			'reqd' : 1,
+			'reqd': 1,
 		},
 		{
 			'fieldname': 'to_date',
 			'fieldtype': 'Date',
 			'label': 'TO Date',
 			'default': frappe.datetime.get_today(),
-			'reqd' : 1,
+			'reqd': 1,
 		},
 		{
 			'fieldname': 'customer',
@@ -30,6 +30,12 @@ frappe.query_reports["Customer Ledger Area and Sales Person Wise"] = {
 			'label': 'Customer',
 			'options': 'Customer',
 		},
+		{
+			'fieldname': 'upto_level',
+			'fieldtype': 'Select',
+			'label': 'Up To',
+			'options': '\n0\n1\n2\n3\n4'
+		}
 	],
 
 	formatter: function (value, row, column, data, default_formatter, filter) {
@@ -45,6 +51,12 @@ frappe.query_reports["Customer Ledger Area and Sales Person Wise"] = {
 		}
 		if (data.level == 3) {
 			value = `<div style="color:orange; font-weight:bold;">${value}</div>`
+		}
+		if (data.level == 4) {
+			value = `<div style="color:#f57842; font-weight:bold;">${value}</div>`
+		}
+		if (data.particulars == 'Total') {
+			value = value.bold()
 		}
 		return value;
 	},

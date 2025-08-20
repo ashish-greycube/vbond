@@ -1,5 +1,5 @@
 import frappe
-
+from frappe import _
 # Function For Filtering Destination Based On State
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
@@ -152,3 +152,68 @@ def calculate_trip_km(self, method):
     if current_odometer > last_odometer:
         current_trip_km = current_odometer - last_odometer
         self.custom_trip_km = current_trip_km
+
+# Creation Of Serial Batch No Feature
+def generate_and_set_batch_no(self, method=None):
+    if self.stock_entry_type == "Manufacture":
+        if len(self.items) > 0:
+            print("Inside Function")
+            for item in self.items:
+                has_batch_no_checked = frappe.db.get_value("Item", item.item_code, 'has_batch_no')
+                if has_batch_no_checked == 1:
+                    if item.use_serial_batch_fields == 0 and item.batch_no == None:
+                        # Check If Batch No Exists 
+                        batch_no = check_batch_no_exist(item.item_code, has_batch_no_checked, self.posting_date)
+                        if batch_no!=None:
+                            item.use_serial_batch_fields = 1
+                            item.batch_no = batch_no
+                            frappe.msgprint(_('Item {0} existing  batch {1} is added').format(item.item_code,item.batch_no),alert=True, indicator="orange")
+                        else:
+                            # Generate Batch No and Set 
+                            batch_no = generate_batch_no(item.item_code, has_batch_no_checked, self.posting_date)
+                            if batch_no != None:
+                                item.use_serial_batch_fields = 1
+                                item.batch_no = batch_no
+                                frappe.msgprint(_('Item {0} new batch {1} is added').format(item.item_code,item.batch_no),alert=True,indicator="green")
+
+
+def check_batch_no_exist(item_code, batch_no_checked, posting_date):
+    batch_name = None
+    if batch_no_checked == 1:
+        batch_prefix = frappe.db.get_value("Item", item_code, "custom_batch_prefix")
+        expected_batch_name = "{0}-{1}".format(batch_prefix, frappe.utils.getdate(posting_date).strftime("%Y%m%d"))
+
+    batches_found = frappe.db.get_list("Batch", {
+                        "item" : item_code,
+                        "reference_doctype" : "Stock Entry",
+                        "name" : expected_batch_name
+                    },
+                    pluck = "name")
+
+    if len(batches_found) > 0:
+        print(batches_found)
+        batch_name = batches_found[0]
+    return batch_name
+    
+def generate_batch_no(item_code, batch_no_checked, posting_date):
+    def make_batch(item_code, posting_date, batch_id):
+        if frappe.db.get_value("Item", item_code, "has_batch_no")  == 1:
+            doc = frappe.new_doc("Batch")   
+            doc.batch_id = batch_id
+            doc.item = item_code
+            doc.manufacturing_date = posting_date
+            doc.stock_uom = frappe.db.get_value('Item', item_code, 'stock_uom')
+            doc.reference_doctype = "Stock Entry"
+
+            doc.insert(ignore_permissions = True)
+
+            return doc.name
+        
+    generated_batch_no = None
+    if batch_no_checked == 1:   
+        batch_prefix = frappe.db.get_value("Item", item_code, "custom_batch_prefix")
+        batch_suffix = frappe.utils.getdate(posting_date).strftime("%Y%m%d")
+        batch_id = "{0}-{1}".format(batch_prefix, batch_suffix)
+
+        generated_batch_no = make_batch(item_code, posting_date, batch_id)
+        return generated_batch_no

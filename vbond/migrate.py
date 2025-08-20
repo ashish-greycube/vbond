@@ -572,6 +572,20 @@ def after_migrate():
             'is_custom_field' : 1,
             'is_system_generated' : 0,
           }
+      ],
+
+      "Item": [
+          {
+            'fieldname' : 'custom_batch_prefix',
+            'fieldtype' : 'Data',
+            'label' : 'Batch Prefix',
+            'insert_after' : 'has_batch_no',
+            'is_custom_field' : 1,
+            'is_system_generated' : 0,
+            'depends_on': 'eval:doc.has_batch_no==1',
+            'mandatory_depends_on': 'eval:doc.has_batch_no==1',
+            'unique':1
+          }
       ]
     }
 

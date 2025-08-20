@@ -26,6 +26,12 @@ def get_columns(filters):
 			'width' : 380
 		},
 		{
+			'fieldname' : 'credit_limit',
+			'fieldtype' : 'Data',
+			'label' : _('Credit Limit'),
+			'width' : 160
+		},
+		{
 			'fieldname' : 'opening_balance',
 			'fieldtype' : 'Currency',
 			'label' : _('Opening Balance'),
@@ -101,6 +107,7 @@ def get_message():
 		<p style="height:20px; width:110px; background-color:green; color:white; padding:0 6px;">For Level 1 Data</p>
 		<p style="height:20px; width:115px; background-color:violet; color:white; padding:0 6px;">For Level 2 Data</p>
 		<p style="height:20px; width:115px; background-color:orange; color:white; padding:0 6px;">For Level 3 Data</p>
+		<p style="height:20px; width:115px; background-color:#f57842; color:white; padding:0 6px;">For Level 4 Data</p>
     </div>
 	'''
 	return msg
@@ -112,6 +119,9 @@ def get_data(filters):
 	
 	if filters.get('customer'):
 		data = get_filtered_data(data, filters.get('customer'))
+
+	if filters.get('upto_level'):
+		data = get_upto_level_data(data, filters.get('upto_level'))
 	return data
 
 def get_report_data(sales_persons, filters):
@@ -124,17 +134,25 @@ def get_report_data(sales_persons, filters):
 	root_nodes = get_children('Sales Person',root)
 	root_list = [r['title'] for r in root_nodes]
 
+	sec_level_nodes = []
+	for node in root_list:
+		sec_root_nodes = get_children('Sales Person',node)
+		sec_level_nodes = sec_level_nodes + [r['title'] for r in sec_root_nodes]
+		
+	print(root_list, sec_level_nodes)
 	for sp in sales_persons:
 		total_opening = total_invoiced = total_paid = total_credit = total_closing = 0
 		if sp['is_group'] == 1 and sp['parent'] == "Sales Team":
 			level = 0
 		elif sp['is_group'] == 1 and sp['parent'] in root_list:
 			level = 1
-		elif sp['is_group'] == 1:
+		elif sp['is_group'] == 1 and sp['parent'] in sec_level_nodes:
 			level = 2
-		else:
+		elif sp['is_group'] == 1:
 			level = 3
-
+		else:
+			level = 4
+		
 		sp_row = {
 			'particulars' : sp['sales_person'],
 			'level' : level,
@@ -170,9 +188,12 @@ def get_report_data(sales_persons, filters):
 		elif sp['is_group'] == 0:
 			if len(sp['customers']) > 0:
 				for customer in sp['customers']:
+					customer_credit_limit = frappe.db.get_value("Customer Credit Limit", {"parenttype":"Customer", "parent": customer.parent}, 'credit_limit')
 					customer_row = {
 						'particulars' :  customer['parent'],
-						'parent': sp['sales_person']
+						'parent': sp['sales_person'],
+						'credit_limit' : customer_credit_limit,
+
 					}
 					data.append(customer_row)
 
@@ -215,6 +236,27 @@ def get_report_data(sales_persons, filters):
 				'credit_note' : d['credit_note'] + grp_rtn_total,
 				'closing_balance' : d['closing_balance'] + grp_cls_total,
 			})
+	
+	total_row = {
+		'particulars' : 'Total',
+		'opening_balance' : 0,
+		'invoiced_amount' : 0,
+		'paid_amount' : 0,
+		'credit_note' : 0,
+		'closing_balance' : 0
+	}
+	for d in data:
+		if 'level' in d and d['level'] == 0:
+			total_row.update({
+				'particulars' : 'Total',
+				'opening_balance' : total_row['opening_balance'] + d['opening_balance'],
+				'invoiced_amount' : total_row['invoiced_amount'] + d['invoiced_amount'],
+				'paid_amount' : total_row['paid_amount'] + d['paid_amount'],
+				'credit_note' : total_row['credit_note'] + d['credit_note'],
+				'closing_balance' : total_row['closing_balance'] + d['closing_balance']
+			})
+	data.append(total_row)
+
 	return data
          
 
@@ -224,3 +266,31 @@ def get_filtered_data(data, customer):
 		if d['particulars'] == customer:
 			filtereddata.append(d)
 	return filtereddata
+
+def get_upto_level_data(data, level):
+	total_row = {
+		'particulars' : 'Total',
+		'opening_balance' : 0,
+		'invoiced_amount' : 0,
+		'paid_amount' : 0,
+		'credit_note' : 0,
+		'closing_balance' : 0
+	}
+	filtered_data = []
+	level = int(level)
+
+	for d in data:
+		if 'level' in d and d['level'] == level:
+			filtered_data.append(d)
+
+	for fd in filtered_data:
+		total_row.update({
+			'opening_balance' : total_row['opening_balance'] + fd['opening_balance'],
+			'invoiced_amount' : total_row['invoiced_amount'] + fd['invoiced_amount'],
+			'paid_amount' : total_row['paid_amount'] + fd['paid_amount'],
+			'credit_note' : total_row['credit_note'] + fd['credit_note'],
+			'closing_balance' : total_row['closing_balance'] + fd['closing_balance']
+		})
+	filtered_data.append(total_row)
+
+	return filtered_data

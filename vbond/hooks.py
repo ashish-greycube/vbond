@@ -154,6 +154,9 @@ doc_events = {
 	},
     "Vehicle Log" : {
         "validate" : "vbond.api.calculate_trip_km"
+    },
+    "Stock Entry" : {
+        "before_validate" : "vbond.api.generate_and_set_batch_no"
     }
 }
 

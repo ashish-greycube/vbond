@@ -16,12 +16,16 @@ def execute(filters=None):
 	columns = get_columns()
 	data = get_data(filters)
 
+	if filters.get('upto_level'):
+		data = get_filtered_data(data, filters.get('upto_level'))
+
 	msg = '''
 	<div style="display:flex; gap:5px">
-    	<p style="height:20px; width:110px; background-color:red; color:white; padding:0 5px;">For Level 1 Data</p>
-		<p style="height:20px; width:110px; background-color:green; color:white; padding:0 5px;">For Level 2 Data</p>
-		<p style="height:20px; width:145px; background-color:blue; color:white; padding:0 6px;">For Level 3 & 3.1 Data</p>
-		<p style="height:20px; width:135px; background-color:orange; color:white; padding:0 9px;">For Level 3.1.1 Data</p>
+    	<p style="height:20px; width:115px; background-color:red; color:white; padding:0 6px;">For Level 0 Data</p>
+		<p style="height:20px; width:110px; background-color:green; color:white; padding:0 6px;">For Level 1 Data</p>
+		<p style="height:20px; width:115px; background-color:violet; color:white; padding:0 6px;">For Level 2 Data</p>
+		<p style="height:20px; width:115px; background-color:orange; color:white; padding:0 6px;">For Level 3 Data</p>
+		<p style="height:20px; width:115px; background-color:#f57842; color:white; padding:0 6px;">For Level 4 Data</p>
     </div>
 	'''
 	return columns, data, msg 
@@ -40,6 +44,12 @@ def get_columns():
 			'label': _('Customer'),
 			'options' : 'Customer',
 			'width': 200
+		},
+		{
+			'fieldname' : 'credit_limit',
+			'fieldtype' : 'Data',
+			'label' : _('Credit Limit'),
+			'width' : 160
 		},
 		{
 			'fieldname': 'pending_bills',
@@ -109,6 +119,12 @@ def get_data(filters):
 	conditions = get_conditions(filters)
 	root = get_root_of('Sales Person')
 	root_nodes = get_children('Sales Person',root)
+	root_list = [r['title'] for r in root_nodes]
+
+	sec_level_nodes = []
+	for node in root_list:
+		sec_root_nodes = get_children('Sales Person',node)
+		sec_level_nodes = sec_level_nodes + [r['title'] for r in sec_root_nodes]
 
 	# Accounts Receivable Summary Report Data
 	ars_filters = {
@@ -218,7 +234,10 @@ def get_data(filters):
 					range1total = range2total = range3total = range4total = range5total = range6total = range7total = range8total = 0
 					for sps in sales_person_list:
 						if sps['value'] == child and sps['expandable'] == 1:
-							new_fr = { 'particulars' : child, 'level' : 2 }
+							if sps['parent'] in sec_level_nodes:
+								new_fr = { 'particulars' : child, 'level' : 2 }
+							else: 
+								new_fr = { 'particulars' : child, 'level' : 3 }
 							if new_fr not in final_output: 
 								final_output.append(new_fr) 
 							for data in ars_data:
@@ -235,7 +254,7 @@ def get_data(filters):
 							amnts.append({ 'parent' : sps['parent'], 'title':child, 'amount':totals, 'r1t' : range1total, 'r2t':range2total, 'r3t':range3total,'r4t': range4total, 'r5t':range5total, 'r6t':range6total, 'r7t':range7total, 'r8t': range8total })
 
 						elif sps['value'] == child and sps['expandable'] == 0:
-							new_fr = { 'particulars' : child, 'level' : 3 }
+							new_fr = { 'particulars' : child, 'level' : 4 }
 							if new_fr not in final_output: 
 								final_output.append(new_fr) 
 							for data in ars_data:
@@ -265,11 +284,17 @@ def get_data(filters):
 			name = sp['value']
 			order_by = 'rgt desc'
 			project_childs = get_descendants_of(doctype, name,order_by)
-
+			
 			for pr_child in project_childs:
 				pr1total = pr2total = pr3total = pr4total = pr5total = pr6total = pr7total = pr8total = 0
 				pr_totals = 0
-				new_fr = { 'particulars': pr_child, 'level' : 2 }
+				new_fr = { 'particulars': pr_child, }
+				for sp in sales_person_list:
+					if sp['value'] == pr_child:
+						if sp['expandable'] == 1:
+							new_fr.update({'level' : 1})
+						else:
+							new_fr.update({'level' : 4})
 				if new_fr not in final_output:
 					final_output.append(new_fr)
 
@@ -443,5 +468,68 @@ def get_data(filters):
 
 					if res == False:
 						output_report_data.append(fr)
+	total_row = {
+		'particulars' : 'Total',
+		'pending_bills' : 0,
+		'range1' : 0,
+		'range2' : 0,
+		'range3' : 0,
+		'range4' : 0,
+		'range5' : 0,
+		'range6' : 0,
+		'range7' : 0,
+		'range8' : 0,
+	}
+	for ord in output_report_data:
+		if 'level' in ord and ord['level'] == 0:
+			total_row.update({
+				'pending_bills' : total_row['pending_bills'] + ord['pending_bills'],
+				'range1' : total_row['range1'] + ord['range1'],
+				'range2' : total_row['range2'] + ord['range2'],
+				'range3' : total_row['range3'] + ord['range3'],
+				'range4' : total_row['range4'] + ord['range4'],
+				'range5' : total_row['range5'] + ord['range5'],
+				'range6' : total_row['range6'] + ord['range6'],
+				'range7' : total_row['range7'] + ord['range7'],
+				'range8' : total_row['range8'] + ord['range8'],
+			})
+	output_report_data.append(total_row)
 
+	for output in output_report_data:
+		if 'customer' in output:
+			if output['customer'] != None or "":
+				customer_credit_value = frappe.db.get_value("Customer Credit Limit", {"parenttype":"Customer", "parent": output['customer']}, 'credit_limit')
+				output['credit_limit'] = customer_credit_value
 	return output_report_data	
+
+def get_filtered_data(data, level):
+	level = int(level)
+	filtered_data = []
+	total_row = {
+		'particulars' : 'Total',
+		'pending_bills' : 0,
+		'range1' : 0,
+		'range2' : 0,
+		'range3' : 0,
+		'range4' : 0,
+		'range5' : 0,
+		'range6' : 0,
+		'range7' : 0,
+		'range8' : 0,
+	}
+	for d in data:
+		if 'level' in d and d['level'] == level:
+			filtered_data.append(d)
+			total_row.update({
+				'pending_bills' : total_row['pending_bills'] + d['pending_bills'],
+				'range1' : total_row['range1'] + d['range1'],
+				'range2' : total_row['range2'] + d['range2'],
+				'range3' : total_row['range3'] + d['range3'],
+				'range4' : total_row['range4'] + d['range4'],
+				'range5' : total_row['range5'] + d['range5'],
+				'range6' : total_row['range6'] + d['range6'],
+				'range7' : total_row['range7'] + d['range7'],
+				'range8' : total_row['range8'] + d['range8'],
+			})
+	filtered_data.append(total_row)
+	return filtered_data
