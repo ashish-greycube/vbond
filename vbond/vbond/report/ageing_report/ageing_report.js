@@ -32,6 +32,9 @@ frappe.query_reports["Ageing Report"] = {
 
 	formatter: function (value, row, column, data, default_formatter, filter) {
 		value = default_formatter(value, row, column, data);
+		if (column.fieldname == "credit_limit") {
+			value = `<div style="text-align:right;">${value}</div>`
+		}
 		if (data.level == 0) {
 			value = `<div style="color:red; font-weight:bold;">${value}</div>`
 		}

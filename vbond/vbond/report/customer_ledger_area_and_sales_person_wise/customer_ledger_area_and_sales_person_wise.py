@@ -192,7 +192,7 @@ def get_report_data(sales_persons, filters):
 					customer_row = {
 						'particulars' :  customer['parent'],
 						'parent': sp['sales_person'],
-						'credit_limit' : customer_credit_limit,
+						'credit_limit' : frappe.format(customer_credit_limit, "Currency"),
 
 					}
 					data.append(customer_row)

@@ -499,7 +499,7 @@ def get_data(filters):
 		if 'customer' in output:
 			if output['customer'] != None or "":
 				customer_credit_value = frappe.db.get_value("Customer Credit Limit", {"parenttype":"Customer", "parent": output['customer']}, 'credit_limit')
-				output['credit_limit'] = customer_credit_value
+				output['credit_limit'] = frappe.format(customer_credit_value, "Currency")
 	return output_report_data	
 
 def get_filtered_data(data, level):
