@@ -35,15 +35,28 @@ def get_columns(filters):
 		},
 	]
 
-	for i in range(1, 32):
+	total_days = frappe.utils.date_diff(frappe.utils.getdate(filters.get('to_date')), frappe.utils.getdate(filters.get('from_date')))
+
+	i = 1
+	for day in range(0, total_days+1):
+		dayname = frappe.utils.getdate(frappe.utils.add_to_date(filters.get('from_date'), days=day)).strftime("%a")
+		day = cint(frappe.utils.getdate(frappe.utils.add_to_date(filters.get('from_date'), days=day)).strftime("%d"))
+		
 		col = {
 			'fieldname' : i,
 			'fieldtype' : 'Data',
-			'label' : i,
+			'label' : "{0} {1}".format(day, dayname),
 			'width' : 100,
 		}
 		columns.append(col)
+		i = i + 1
 	
+	columns.append({
+		'fieldname' : 'total',
+		'fieldtype' : 'Data',
+		'label' : _('Total'),
+		'width' : 130,
+	})
 	return columns
 
 def get_conditions(filters):
@@ -54,7 +67,7 @@ def get_data(filters):
 	# Reference Report Data
 	data = get_monthly_attendance_sheet_report_data(filters)
 	data = data[1]
-	
+	# print(data)
 	# Creating Employee Attendance Map For Optimazation
 	employee_times_map = {} 
 	end_date = filters.get('to_date') ,
@@ -113,14 +126,16 @@ def get_data(filters):
 	for out in report_output:
 		in_row = {'employee':out, 'employee_name':report_output[out][0]['employee_name'],  'detail': 'In Time', 'shift' :report_output[out][0]['shift'], 'department' :report_output[out][0]['department'] }
 		out_row = {'hidden_employee':out, 'detail': 'Out Time', 'shift' : report_output[out][0]['shift'], 'department' :report_output[out][0]['department']}
-		hrs_row = {'hidden_employee':out, 'detail': 'Total Hrs', 'shift' : report_output[out][0]['shift'], 'department' :report_output[out][0]['department']}
-		sts_row = {'hidden_employee':out, 'detail': 'Status', 'shift' : report_output[out][0]['shift'], 'department' :report_output[out][0]['department']}
+		hrs_row = {'hidden_employee':out, 'detail': 'Total Hrs', 'shift' : report_output[out][0]['shift'], 'department' :report_output[out][0]['department'], 'total' : 0}
+		sts_row = {'hidden_employee':out, 'detail': 'Status', 'shift' : report_output[out][0]['shift'], 'department' :report_output[out][0]['department'], 'total' : 0}
 		day = 1
 		for d in report_output[out]:
 			in_row[day] = frappe.format(d['in_time'], "Time")
 			out_row[day] = frappe.format(d['out_time'], "Time")
 			hrs_row[day] = d['working_hours']
+			hrs_row['total'] = round(hrs_row['total'] + d['working_hours'], 2)
 			sts_row[day] = d['status']
+			sts_row['total'] = round((sts_row['total'] + 1), 2) if d['status'] == "P" else round(sts_row['total'], 2)
 			day = day + 1
 		report_rows.append(in_row)
 		report_rows.append(out_row)
@@ -138,7 +153,7 @@ def get_data(filters):
 
 def get_filtered_data(filters, report_rows):
 	filtered_data = []
-	
+	print(report_rows)
 	if filters.get("shift") and filters.get('employee') and  filters.get("department"):
 		for rr in report_rows:
 			if (rr['shift'] == filters.get("shift")) and ('employee' in rr and rr['employee'] == filters.get("employee")) or ('hidden_employee' in rr and rr['hidden_employee'] == filters.get("employee")) and (rr['department'] == filters.get("department")):
@@ -148,6 +163,12 @@ def get_filtered_data(filters, report_rows):
 	if filters.get("shift") and filters.get('employee'):
 		for rr in report_rows:
 			if (rr['shift'] == filters.get("shift")) and ('employee' in rr and rr['employee'] == filters.get("employee")) or ('hidden_employee' in rr and rr['hidden_employee'] == filters.get("employee")):
+				filtered_data.append(rr)
+		return filtered_data
+	
+	if filters.get("shift") and filters.get('department'):
+		for rr in report_rows:
+			if (rr['shift'] == filters.get("shift")) and (rr['department'] == filters.get("department")):
 				filtered_data.append(rr)
 		return filtered_data
 
@@ -222,7 +243,8 @@ def get_monthly_attendance_sheet_report_data(filters):
 		if not data:
 			frappe.msgprint(_("No attendance records found for this criteria."), alert=True, indicator="orange")
 			return columns, [], None, None
-
+		# print("============================================================================")
+		# print(data)
 		return columns, data
 
 
@@ -241,7 +263,7 @@ def get_monthly_attendance_sheet_report_data(filters):
 			]
 		)
 		columns.append({"label": _("Shift"), "fieldname": "shift", "fieldtype": "Data", "width": 120})
-		columns.extend(get_columns_for_days(filters))
+		# columns.extend(get_columns_for_days(filters))
 
 		return columns
 
@@ -273,8 +295,8 @@ def get_monthly_attendance_sheet_report_data(filters):
 
 
 	def get_total_days_in_month(filters: Filters) -> int:
-		return monthrange(cint(filters.year), cint(frappe.utils.getdate(filters.get('from_date')).strftime("%m")))[1]
-
+		# return monthrange(cint(filters.year), cint(frappe.utils.getdate(filters.get('from_date')).strftime("%m")))[1]
+		return frappe.utils.date_diff(frappe.utils.getdate(filters.get('to_date')), frappe.utils.getdate(filters.get('from_date')))
 
 	def get_data(filters: Filters, attendance_map: dict) -> list[dict]:
 		employee_details, group_by_param_values = get_employee_related_details(filters)
@@ -304,6 +326,7 @@ def get_monthly_attendance_sheet_report_data(filters):
 		"""
 		
 		attendance_list = get_attendance_records(filters)
+		
 		attendance_map = {}
 		leave_map = {}
 
@@ -328,6 +351,7 @@ def get_monthly_attendance_sheet_report_data(filters):
 				for day in days:
 					for shift in attendance_map[employee].keys():
 						attendance_map[employee][shift][day] = "On Leave"
+	
 		return attendance_map
 
 
@@ -349,8 +373,8 @@ def get_monthly_attendance_sheet_report_data(filters):
 			.where(
 				(Attendance.docstatus == 1)
 				& (Attendance.company.isin(filters.companies))
-				& (Extract("month", Attendance.attendance_date) == cint(frappe.utils.getdate(filters.get('from_date')).strftime("%m")))
-				& (Extract("year", Attendance.attendance_date) == filters.year)
+				& (Attendance.attendance_date >= frappe.utils.getdate(filters.get('from_date')))
+				& (Attendance.attendance_date <= frappe.utils.getdate(filters.get('to_date')))
 			)
 		)
 
@@ -428,8 +452,8 @@ def get_monthly_attendance_sheet_report_data(filters):
 				.select(Extract("day", Holiday.holiday_date).as_("day_of_month"), Holiday.weekly_off)
 				.where(
 					(Holiday.parent == d)
-					& (Extract("month", Holiday.holiday_date) == filters.month)
-					& (Extract("year", Holiday.holiday_date) == filters.year)
+					& (Holiday.holiday_date >= frappe.utils.getdate(filters.get("from_date")))
+					& (Holiday.holiday_date <= frappe.utils.getdate(filters.get("to_date")))
 				)
 			).run(as_dict=True)
 
@@ -449,7 +473,7 @@ def get_monthly_attendance_sheet_report_data(filters):
 			employee_attendance = attendance_map.get(employee)
 			if not employee_attendance:
 				continue
-
+			# print(employee_attendance)
 			attendance_for_employee = get_attendance_status_for_detailed_view(
 				employee, filters, employee_attendance, holidays
 			)
@@ -559,11 +583,13 @@ def get_monthly_attendance_sheet_report_data(filters):
 		"""
 		total_days = get_total_days_in_month(filters)
 		attendance_values = []
-
+		
 		for shift, status_dict in employee_attendance.items():
 			row = {"shift": shift}
-
-			for day in range(1, total_days + 1):
+			
+			for day in range(0, total_days+1):
+				day = cint(frappe.utils.getdate(frappe.utils.add_to_date(filters.get('from_date'), days=day)).strftime("%d"))
+				# print(day)
 				status = status_dict.get(day)
 				if status is None and holidays:
 					status = get_holiday_status(day, holidays)

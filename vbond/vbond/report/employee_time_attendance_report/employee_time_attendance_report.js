@@ -8,13 +8,25 @@ frappe.query_reports["Employee Time Attendance Report"] = {
 			fieldname : 'from_date',
 			fieldtype : 'Date',
 			label : __('From Date'),
-			default : new Date(date.getFullYear(), date.getMonth(), 1)
+			default : new Date(date.getFullYear(), date.getMonth(), 1),
+			on_change: function () {
+				date = new Date(frappe.query_report.get_filter_value("from_date"));
+				to_date = frappe.datetime.add_days(date, 30)
+				frappe.query_report.set_filter_value("to_date", to_date)
+				frappe.query_report.refresh()
+			}
 		},
 		{
 			fieldname : 'to_date',
 			fieldtype : 'Date',
 			label : __('To Date'),
-			default : frappe.datetime.get_today()
+			default : frappe.datetime.get_today(),
+			on_change: function () {
+				date = new Date(frappe.query_report.get_filter_value("to_date"));
+				from_date = frappe.datetime.add_days(date, -30)
+				frappe.query_report.set_filter_value("from_date", from_date)
+				frappe.query_report.refresh()
+			}
 		},
 		{
 			fieldname : 'employee',
