@@ -160,7 +160,8 @@ def generate_and_set_batch_no(self, method=None):
             print("Inside Function")
             for item in self.items:
                 has_batch_no_checked = frappe.db.get_value("Item", item.item_code, 'has_batch_no')
-                if has_batch_no_checked == 1:
+                automatic_create_batch = frappe.db.get_value("Item", item.item_code, 'create_new_batch')
+                if has_batch_no_checked == 1 and automatic_create_batch == 0: 
                     # if item.use_serial_batch_fields == 0 and item.batch_no == None:
                         # Check If Batch No Exists 
                         batch_no = check_batch_no_exist(item.item_code, has_batch_no_checked, self.posting_date)

@@ -583,7 +583,7 @@ def after_migrate():
             'is_custom_field' : 1,
             'is_system_generated' : 0,
             'depends_on': 'eval:doc.has_batch_no==1',
-            'mandatory_depends_on': 'eval:doc.has_batch_no==1',
+            'mandatory_depends_on': 'eval:doc.has_batch_no==1 && doc.create_new_batch==0',
             'unique':1
           }
       ]
