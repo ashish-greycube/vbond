@@ -175,7 +175,7 @@ def get_data(filters):
 			tsi.custom_destination_distance as 'kms',
 			tsi.custom_state as 'state',
 			tsi.total_net_weight as 'weight',
-			tsi.custom_basic_amount as 'basicAmount',
+			tsi.net_total as 'basicAmount',
 			tsi.rounded_total as 'totalAmount',
 			tsi.custom_transport_cost as 'transportAmount',
 			tsi.custom_vehicle_number as 'dedicatedNo',

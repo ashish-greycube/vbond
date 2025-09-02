@@ -345,6 +345,24 @@ def after_migrate():
             'is_system_generated' : 0,
             'allow_on_submit' : 1
         },
+        {
+          'fieldname' : 'custom_alloc_datetime',
+          'fieldtype' : 'Datetime',
+          'label' : 'Alloc Date & Time',
+          'insert_after' : 'custom_transport_destination',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'allow_on_submit' : 1
+        },
+        {
+          'fieldname' : 'custom_dispatch_datetime',
+          'fieldtype' : 'Datetime',
+          'label' : 'Dispatch Date & Time',
+          'insert_after' : 'custom_hired_vehicle_number',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'allow_on_submit' : 1
+        },
 
         # Logistics Report Fields
         {
