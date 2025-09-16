@@ -73,7 +73,7 @@ def get_columns():
 		{
 			'fieldname' : 'basic_amount',
 			'fieldtype' : 'Currency',
-			'label' : _('Basic Amount'),
+			'label' : _('Net Invoice Value'),
 			'width' : 130
 		},
 		{

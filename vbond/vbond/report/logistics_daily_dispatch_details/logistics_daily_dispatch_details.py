@@ -102,7 +102,7 @@ def get_columns():
 		{
 			'fieldname' : 'invoice_value',
 			'fieldtype' : 'Currency',
-			'label' : _('Invoice Value'),
+			'label' : _('Net Invoice Value'),
 			'width' : 150
 		},
 		{
