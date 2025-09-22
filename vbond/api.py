@@ -12,10 +12,10 @@ def filter_destination(doctype, txt, searchfield, start, page_len, filters):
 # Function For Calculating Range Of MT Weight in SO, SI and DN
 def get_mt_weight_range(weight, state):
     mt_weight = ""
-    if state in ['AP', 'TN', 'KA'] and weight > 0.0 and weight <= 8.0:
+    if state in ['Andhra Pradesh', 'Tamilnadu', 'Karnataka'] and weight > 0.0 and weight <= 8.0:
         mt_weight = "6_8_mt"
     
-    elif state in ['TN', 'KA'] and weight > 12.0 and weight <= 16.0:
+    elif state in ['Tamilnadu', 'Karnataka'] and weight > 12.0 and weight <= 16.0:
         mt_weight = "12_16_mt"
 
     elif weight > 0 and weight <= 6.0:
@@ -97,13 +97,22 @@ def calculate_transport_data(self, method):
         mt_weight_range = get_mt_weight_range(metric_weight, state)
         
         if state and destination != None:
-            transport_cost, distance = frappe.db.get_value(
+            transport_cost = frappe.db.get_value(
                 doctype = "Vbond Final Rate Card",
                 filters = {
                     'destination' : destination,
                     'state' : state
                 },
-                fieldname = [mt_weight_range, 'kms']
+                fieldname = [mt_weight_range]
+            )
+
+            distance = frappe.db.get_value(
+                doctype = "Vbond Final Rate Card",
+                filters = {
+                    'destination' : destination,
+                    'state' : state
+                },
+                fieldname = ['kms']
             )
           
             self.custom_destination_distance = distance
