@@ -675,6 +675,36 @@ def after_migrate():
             'read_only_depends_on': 'eval:doc.has_batch_no==1 && doc.create_new_batch==1',
             'unique':1
           }
+      ],
+
+      "Salary Slip" : [
+          {
+            "fieldname" : "custom_overtime_days",
+            "fieldtype" : "Float",
+            "label" : "Overtime Days",
+            "is_system_generated" : 0,
+            "is_custom_field" : 1,
+            "insert_after" : "payment_days",
+            "read_only" : 1
+          },
+          {
+            "fieldname" : "custom_weekly_off",
+            "fieldtype" : "Float",
+            "label" : "Weekly Off",
+            "is_system_generated" : 0,
+            "is_custom_field" : 1,
+            "insert_after" : "leave_without_pay",
+            "read_only" : 1
+          },
+          {
+            "fieldname" : "custom_public_holidays",
+            "fieldtype" : "Float",
+            "label" : "Public Holidays",
+            "is_system_generated" : 0,
+            "is_custom_field" : 1,
+            "insert_after" : "custom_overtime_days",
+            "read_only" : 1
+          }
       ]
     }
 

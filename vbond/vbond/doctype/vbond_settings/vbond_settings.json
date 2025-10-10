@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-10-06 10:35:39.354538",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "default_overtime_salary_component"
+ ],
+ "fields": [
+  {
+   "fieldname": "default_overtime_salary_component",
+   "fieldtype": "Link",
+   "label": "Default Overtime Salary Component",
+   "options": "Salary Component"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-10-06 10:36:26.991240",
+ "modified_by": "Administrator",
+ "module": "Vbond",
+ "name": "Vbond Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

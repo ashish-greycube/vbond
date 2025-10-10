@@ -157,6 +157,9 @@ doc_events = {
     },
     "Stock Entry" : {
         "before_validate" : "vbond.api.generate_and_set_batch_no"
+    },
+    "Salary Slip" : {
+        "after_insert" : "vbond.api.fetch_ot_weekly_off_public_holidays_in_salary_slip"
     }
 }
 

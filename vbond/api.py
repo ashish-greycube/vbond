@@ -227,3 +227,39 @@ def generate_batch_no(item_code, batch_no_checked, posting_date):
 
         generated_batch_no = make_batch(item_code, posting_date, batch_id)
         return generated_batch_no
+
+
+def fetch_ot_weekly_off_public_holidays_in_salary_slip(self, method=None):
+    # First Check In Employee Holiday List If Not Then Take Company
+    holiday_list = frappe.db.get_value("Employee", self.employee, "holiday_list")
+    if holiday_list == None:
+        holiday_list = frappe.db.get_value("Company", self.company, "default_holiday_list")
+        if holiday_list == None:
+            frappe.throw("Please Assign Holiday List To Either Employee or Company.")
+    
+    weekly_off = frappe.db.get_all(
+        doctype = "Holiday",
+        parent_doctype="Holiday List",
+        filters={"parent":holiday_list,"weekly_off":1, "holiday_date":['between', [self.start_date, self.end_date]]},
+        fields = ['count(holiday_date) as wo'],
+        debug = 1
+    )
+    
+    public_holidays = frappe.db.get_all(
+        doctype = "Holiday",
+        parent_doctype="Holiday List",
+        filters={"parent":holiday_list,"weekly_off":0, "holiday_date":['between', [self.start_date, self.end_date]]},
+        fields = ['count(holiday_date) as ph'],
+        debug = 1
+    )
+
+    ot_days = frappe.db.sql(
+        '''
+        SELECT overtime_days FROM `tabVbond Overtime` WHERE docstatus = 1 AND employee = '{0}' AND payroll_date BETWEEN '{1}' AND '{2}';
+        '''.format(self.employee, self.start_date, self.end_date)
+        , as_dict = 1, debug = 1
+    )
+    self.custom_overtime_days = ot_days[0].overtime_days if len(ot_days) > 0 else 0
+    self.custom_weekly_off = weekly_off[0].wo if len(weekly_off) > 0 else 0
+    self.custom_public_holidays = public_holidays[0].ph if len(public_holidays)>0 else 0
+    self.save(ignore_permissions=True)
