@@ -61,7 +61,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-10-09 09:12:59.961966",
+ "modified": "2025-10-13 13:10:00.335829",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "Vbond Overtime",
@@ -69,6 +69,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -77,6 +79,7 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
    "share": 1,
    "submit": 1,
    "write": 1
