@@ -78,10 +78,9 @@ doctype_js = {
 # ----------
 
 # add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "vbond.utils.jinja_methods",
-# 	"filters": "vbond.utils.jinja_filters"
-# }
+jinja = {
+	"methods": ["vbond.jinja.get_leaves_from_leave_ledger_in_salary_slip"],
+}
 
 # Installation
 # ------------
