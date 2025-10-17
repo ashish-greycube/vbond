@@ -93,30 +93,36 @@ def calculate_transport_data(self, method):
         destination = self.custom_transport_destination
         kg_weight = self.total_net_weight
 
-        metric_weight = (kg_weight / 1000)
-        mt_weight_range = get_mt_weight_range(metric_weight, state)
+        if kg_weight == 0:
+            self.custom_transport_cost = 0
+            frappe.msgprint("Total Transport Cost is 0 as Total Net Weight is 0 KG", alert=True, indicator="blue")
+            return
         
-        if state and destination != None:
-            transport_cost = frappe.db.get_value(
-                doctype = "Vbond Final Rate Card",
-                filters = {
-                    'destination' : destination,
-                    'state' : state
-                },
-                fieldname = [mt_weight_range]
-            )
+        elif kg_weight > 0:
+            metric_weight = (kg_weight / 1000)
+            mt_weight_range = get_mt_weight_range(metric_weight, state)
+            
+            if state and destination != None:
+                transport_cost = frappe.db.get_value(
+                    doctype = "Vbond Final Rate Card",
+                    filters = {
+                        'destination' : destination,
+                        'state' : state
+                    },
+                    fieldname = [mt_weight_range]
+                )
 
-            distance = frappe.db.get_value(
-                doctype = "Vbond Final Rate Card",
-                filters = {
-                    'destination' : destination,
-                    'state' : state
-                },
-                fieldname = ['kms']
-            )
-          
-            self.custom_destination_distance = distance
-            self.custom_transport_cost = transport_cost
+                distance = frappe.db.get_value(
+                    doctype = "Vbond Final Rate Card",
+                    filters = {
+                        'destination' : destination,
+                        'state' : state
+                    },
+                    fieldname = ['kms']
+                )
+            
+                self.custom_destination_distance = distance
+                self.custom_transport_cost = transport_cost
 
     # Moving Vehicle Number From Details To Transfer Section
     if vehicle_type == "Dedicated / Company Owned":
