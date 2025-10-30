@@ -19,13 +19,16 @@ class VbondOvertime(Document):
 			doctype = "Salary Structure Assignment",
 			filters = {
 				"employee" : self.employee,
-				"company" : company
+				"company" : company,
+				"docstatus": 1,
 			},
 			fields = ["name"],
 			order_by = "from_date"
 		)
+		print(salary_assignment)
 		if salary_assignment != []:
 			base = frappe.db.get_value("Salary Structure Assignment", salary_assignment, "base")
+			print(base)
 			overtime_amount = (base / 30) * self.overtime_days 
 
 			additional_salary = frappe.new_doc("Additional Salary")
