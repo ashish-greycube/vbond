@@ -33,7 +33,7 @@ class VbondOvertime(Document):
 			if base != None:
 				overtime_amount = (base / 30) * self.overtime_days 
 			else:
-				overtime_amount = 0
+				frappe.throw("Base Amount Is Not Available In Salary Structure Assignment {0}".format(salary_assignment))
 
 			additional_salary = frappe.new_doc("Additional Salary")
 			additional_salary.employee = self.employee
