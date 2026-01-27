@@ -23,12 +23,13 @@ class VbondOvertime(Document):
 				"docstatus": 1,
 			},
 			fields = ["name"],
-			order_by = "from_date"
+			order_by = "from_date DESC",
+			limit = 1
 		)
 		print(salary_assignment)
-		if salary_assignment != []:
+		if salary_assignment != [] and len(salary_assignment) > 0:
 			overtime_amount = 0
-			base = frappe.db.get_value("Salary Structure Assignment", salary_assignment, "base")
+			base = frappe.db.get_value("Salary Structure Assignment", salary_assignment[0].name, "base")
 			print(base)
 			if base != None:
 				overtime_amount = (base / 30) * self.overtime_days 
@@ -42,6 +43,7 @@ class VbondOvertime(Document):
 			additional_salary.salary_component = overtime_salary_component
 			additional_salary.currency = frappe.db.get_value("Company", company, "default_currency")
 			additional_salary.overwrite_salary_structure_amount = 1
+			additional_salary.custom_overtime_ref = self.name
 			additional_salary.amount = overtime_amount
 
 			additional_salary.save(ignore_permissions=True)

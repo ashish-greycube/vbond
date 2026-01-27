@@ -269,3 +269,27 @@ def fetch_ot_weekly_off_public_holidays_in_salary_slip(self, method=None):
     self.custom_weekly_off = weekly_off[0].wo if len(weekly_off) > 0 else 0
     self.custom_public_holidays = public_holidays[0].ph if len(public_holidays)>0 else 0
     self.save(ignore_permissions=True)
+
+def cancel_overtime_on_cancel_of_additional_salary(self, method=None):
+    if self.custom_overtime_ref != None:
+        overtime_doc = frappe.get_doc("Vbond Overtime", self.custom_overtime_ref)
+        if overtime_doc:
+            overtime_doc.cancel()
+            frappe.msgprint("Overtime Doctype For This Additional Salary Is Cancelled.", alert=True)
+    else:
+        overtime_doc_list = frappe.db.get_all(
+            "Vbond Overtime",
+            filters = {
+                "payroll_date": self.payroll_date,
+                "employee": self.employee,
+                "docstatus": 1
+            },
+            pluck = "name",
+            limit = 1,
+            order_by = "payroll_date DESC"
+        )
+        if overtime_doc_list != [] and len(overtime_doc_list) > 0:
+            overtime_doc = frappe.get_doc("Vbond Overtime", overtime_doc_list[0])
+            if overtime_doc:
+                overtime_doc.cancel()
+                frappe.msgprint("Overtime Doctype For This Additional Salary Is Cancelled.", alert=True)

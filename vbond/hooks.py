@@ -159,6 +159,9 @@ doc_events = {
     },
     "Salary Slip" : {
         "after_insert" : "vbond.api.fetch_ot_weekly_off_public_holidays_in_salary_slip"
+    },
+    "Additional Salary": {
+        "on_cancel": "vbond.api.cancel_overtime_on_cancel_of_additional_salary"
     }
 }
 

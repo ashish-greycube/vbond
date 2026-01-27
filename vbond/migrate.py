@@ -705,6 +705,19 @@ def after_migrate():
             "insert_after" : "custom_overtime_days",
             "read_only" : 1
           }
+      ],
+
+      "Additional Salary" : [
+          {
+            "fieldname" : "custom_overtime_ref",
+            "fieldtype" : "Data",
+            "label" : "Vbond Overtime Ref",
+            "is_system_generated" : 0,
+            "is_custom_field" : 1,
+            "insert_after" : "ref_docname",
+            "read_only" : 1,
+            "hidden": 1
+          }
       ]
     }
 
