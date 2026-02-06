@@ -1,5 +1,8 @@
 import frappe
 from frappe import _
+import erpnext
+from erpnext.buying.report.item_wise_purchase_history.item_wise_purchase_history import execute 
+
 # Function For Filtering Destination Based On State
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
@@ -293,3 +296,32 @@ def cancel_overtime_on_cancel_of_additional_salary(self, method=None):
             if overtime_doc:
                 overtime_doc.cancel()
                 frappe.msgprint("Overtime Doctype For This Additional Salary Is Cancelled.", alert=True)
+    
+            
+@frappe.whitelist()
+def po_data(item_code):
+    filters = {
+        'from_date': frappe.utils.add_months(frappe.utils.today(), -3),
+        "to_date" :frappe.utils.today(),
+        "company" :erpnext.get_default_company(),
+        "item_code": item_code
+	}
+    data = execute(filters)
+    
+    res = []
+    if len(data) > 0:
+        if data[1]:
+            res = [data[1][0]]
+        else:
+            res = []
+        
+        for d in data[1]:
+            isPresent = False
+            for r in res:
+                if res != [] and d['supplier_name'] == r['supplier_name']:
+                    isPresent = True
+            if isPresent == False:
+                res.append(d)
+            
+    return res
+
