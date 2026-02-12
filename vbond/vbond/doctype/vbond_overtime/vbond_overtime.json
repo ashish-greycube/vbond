@@ -11,6 +11,7 @@
   "payroll_date",
   "column_break_ixys",
   "employee_name",
+  "working_days",
   "overtime_days",
   "amended_from"
  ],
@@ -55,17 +56,24 @@
   {
    "fieldname": "column_break_ixys",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "working_days",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Working Days",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-10-13 13:10:00.335829",
+ "modified": "2026-02-12 10:54:40.634665",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "Vbond Overtime",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
