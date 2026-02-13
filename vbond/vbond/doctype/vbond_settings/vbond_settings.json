@@ -5,7 +5,9 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "default_overtime_salary_component"
+  "default_overtime_salary_component",
+  "column_break_nxqh",
+  "default_gratuity_component"
  ],
  "fields": [
   {
@@ -13,13 +15,23 @@
    "fieldtype": "Link",
    "label": "Default Overtime Salary Component",
    "options": "Salary Component"
+  },
+  {
+   "fieldname": "default_gratuity_component",
+   "fieldtype": "Link",
+   "label": "Default Gratuity Component",
+   "options": "Salary Component"
+  },
+  {
+   "fieldname": "column_break_nxqh",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-10-06 10:36:26.991240",
+ "modified": "2026-02-13 11:58:39.865986",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "Vbond Settings",
