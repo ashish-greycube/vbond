@@ -179,7 +179,8 @@ def generate_and_set_batch_no(self, method=None):
             for item in self.items:
                 has_batch_no_checked = frappe.db.get_value("Item", item.item_code, 'has_batch_no')
                 automatic_create_batch = frappe.db.get_value("Item", item.item_code, 'create_new_batch')
-                if has_batch_no_checked == 1 and automatic_create_batch == 0: 
+                is_finished_item = item.is_finished_item
+                if has_batch_no_checked == 1 and automatic_create_batch == 0 and is_finished_item == 1: 
                     # if item.use_serial_batch_fields == 0 and item.batch_no == None:
                         # Check If Batch No Exists 
                         batch_no = check_batch_no_exist(item.item_code, has_batch_no_checked, self.posting_date)
@@ -348,7 +349,7 @@ def check_valid_batch_no_exist(item_code, batch_no_checked, posting_date, doctyp
     batch_name = None
     if batch_no_checked == 1:
         batch_prefix = frappe.db.get_value("Item", item_code, "custom_batch_prefix")
-        expected_batch_name = "{0}-{1}".format(batch_prefix, frappe.utils.getdate(posting_date).strftime("%Y%m%d"))
+        expected_batch_name = "PR-{0}-{1}".format(batch_prefix, frappe.utils.getdate(posting_date).strftime("%Y%m%d"))
     batches_found = frappe.db.get_list(
                         "Batch", 
                         {
@@ -379,6 +380,6 @@ def generate_valid_batch_no(item_code, batch_no_checked, posting_date, doctype):
     if batch_no_checked == 1:   
         batch_prefix = frappe.db.get_value("Item", item_code, "custom_batch_prefix")
         batch_suffix = frappe.utils.getdate(posting_date).strftime("%Y%m%d")
-        batch_id = "{0}-{1}".format(batch_prefix, batch_suffix)
+        batch_id = "PR-{0}-{1}".format(batch_prefix, batch_suffix)
         generated_batch_no = make_batch(item_code, posting_date, batch_id, doctype)
         return generated_batch_no
