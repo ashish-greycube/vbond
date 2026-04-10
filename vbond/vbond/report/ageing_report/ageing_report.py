@@ -483,15 +483,15 @@ def get_data(filters):
 	for ord in output_report_data:
 		if 'level' in ord and ord['level'] == 0:
 			total_row.update({
-				'pending_bills' : total_row['pending_bills'] + ord['pending_bills'],
-				'range1' : total_row['range1'] + ord['range1'],
-				'range2' : total_row['range2'] + ord['range2'],
-				'range3' : total_row['range3'] + ord['range3'],
-				'range4' : total_row['range4'] + ord['range4'],
-				'range5' : total_row['range5'] + ord['range5'],
-				'range6' : total_row['range6'] + ord['range6'],
-				'range7' : total_row['range7'] + ord['range7'],
-				'range8' : total_row['range8'] + ord['range8'],
+				'pending_bills' : total_row['pending_bills'] + (ord['pending_bills'] if 'pending_bills' in ord else 0),
+				'range1' : total_row['range1'] + (ord['range1'] if 'range1' in ord else 0),
+				'range2' : total_row['range2'] + (ord['range2'] if 'range2' in ord else 0),
+				'range3' : total_row['range3'] + (ord['range3'] if 'range3' in ord else 0),
+				'range4' : total_row['range4'] + (ord['range4'] if 'range4' in ord else 0),
+				'range5' : total_row['range5'] + (ord['range5'] if 'range5' in ord else 0),
+				'range6' : total_row['range6'] + (ord['range6'] if 'range6' in ord else 0),
+				'range7' : total_row['range7'] + (ord['range7'] if 'range7' in ord else 0),
+				'range8' : total_row['range8'] + (ord['range8'] if 'range8' in ord else 0),
 			})
 	output_report_data.append(total_row)
 
@@ -521,15 +521,15 @@ def get_filtered_data(data, level):
 		if 'level' in d and d['level'] == level:
 			filtered_data.append(d)
 			total_row.update({
-				'pending_bills' : total_row['pending_bills'] + d['pending_bills'],
-				'range1' : total_row['range1'] + d['range1'],
-				'range2' : total_row['range2'] + d['range2'],
-				'range3' : total_row['range3'] + d['range3'],
-				'range4' : total_row['range4'] + d['range4'],
-				'range5' : total_row['range5'] + d['range5'],
-				'range6' : total_row['range6'] + d['range6'],
-				'range7' : total_row['range7'] + d['range7'],
-				'range8' : total_row['range8'] + d['range8'],
+				'pending_bills' : total_row['pending_bills'] + (d['pending_bills'] if 'pending_bills' in d else 0),
+				'range1' : total_row['range1'] + (d['range1'] if 'range1' in d else 0),
+				'range2' : total_row['range2'] + (d['range2'] if 'range2' in d else 0),
+				'range3' : total_row['range3'] + (d['range3'] if 'range3' in d else 0),
+				'range4' : total_row['range4'] + (d['range4'] if 'range4' in d else 0),
+				'range5' : total_row['range5'] + (d['range5'] if 'range5' in d else 0),
+				'range6' : total_row['range6'] + (d['range6'] if 'range6' in d else 0),
+				'range7' : total_row['range7'] + (d['range7'] if 'range7' in d else 0),
+				'range8' : total_row['range8'] + (d['range8'] if 'range8' in d else 0),
 			})
 	filtered_data.append(total_row)
 	return filtered_data
