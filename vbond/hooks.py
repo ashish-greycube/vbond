@@ -269,3 +269,4 @@ after_migrate = ['vbond.migrate.after_migrate']
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+required_apps = ["erpnext","hrms"]
