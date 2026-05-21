@@ -1,6 +1,7 @@
 import frappe
 from frappe import _
 import erpnext
+from frappe.utils import flt
 from erpnext.buying.report.item_wise_purchase_history.item_wise_purchase_history import execute 
 
 # Function For Filtering Destination Based On State
@@ -383,3 +384,76 @@ def generate_valid_batch_no(item_code, batch_no_checked, posting_date, doctype):
         batch_id = "PR-{0}-{1}".format(batch_prefix, batch_suffix)
         generated_batch_no = make_batch(item_code, posting_date, batch_id, doctype)
         return generated_batch_no
+    
+@frappe.whitelist()
+def fetch_discount_percentage_and_calculate_discount_amount(self, method):
+    vbond_settings_doc = frappe.get_doc("Vbond Settings")
+    if (vbond_settings_doc.at_12_18_mt in [0, None] or vbond_settings_doc.at_18_25_mt in [0, None] or vbond_settings_doc.at_more_then_25_mt in [0, None]):
+        frappe.throw("Please Set Discount Percentage for Telangana and Andhra Pradesh In Vbond Settings To Calculate Discount Amount.")
+        return
+    if (vbond_settings_doc.ot_12_18_mt in [0, None] or vbond_settings_doc.ot_18_30_mt in [0, None] or vbond_settings_doc.ot_more_then_30_mt in [0, None]):
+        frappe.throw("Please Set Discount Percentage for Other States In Vbond Settings To Calculate Discount Amount.")
+        return
+    if (vbond_settings_doc.v_05_1_lacs in [0, None] or vbond_settings_doc.v_1_25_lacs in [0, None] or vbond_settings_doc.v_25_35_lacs in [0, None] or vbond_settings_doc.v_more_then_35_lacs in [0, None]):
+        frappe.throw("Please Set Discount Percentage Based On Value In Vbond Settings To Calculate Discount Amount.")
+        return
+    
+    tonnage = self.custom_total_tonnage
+    total_amount = self.total
+    discount_percentage_based_on_weight_value = get_discount_percentage_based_on_range(self.custom_state, tonnage, total_amount, self.custom_discount_based_on)
+    discount_amount_weight_value = self.total * (discount_percentage_based_on_weight_value / 100)
+    amount_after_weight_value_discount = self.total - discount_amount_weight_value
+    cash_discount_amount = amount_after_weight_value_discount * ((self.custom_cash_discount_percentage or 0) / 100)
+    amount_after_cash_discount = amount_after_weight_value_discount - cash_discount_amount
+    if vbond_settings_doc.insurance in [0, None]:
+        frappe.throw("Please Set Insurance Discount Percentage In Vbond Settings To Calculate Insurance Discount Amount.")
+        return
+    insurance_discount_percentage = vbond_settings_doc.insurance
+    insurance_discount_amount = amount_after_cash_discount * (insurance_discount_percentage / 100)
+
+    total_additional_discount_amount = discount_amount_weight_value + cash_discount_amount - insurance_discount_amount
+
+    self.custom_weight_value_discount_percentage = discount_percentage_based_on_weight_value
+    self.custom_discount_amount_weight_value = discount_amount_weight_value
+    self.custom_cash_discount_amount = cash_discount_amount
+    self.custom_insurance_percentage = insurance_discount_percentage
+    self.custom_insurance_amount = insurance_discount_amount
+    self.discount_amount = total_additional_discount_amount
+
+
+def get_discount_percentage_based_on_range(state, tonnage, total_amount, discount_based_on):
+    vbond_settings_doc = frappe.get_doc("Vbond Settings")
+    tonnage = flt(tonnage) or 0
+    total_amount = flt(total_amount) or 0
+    discount_percentage = 0
+    if discount_based_on == "Weight":
+        if state in ["Telangana", "Andhra Pradesh"]:
+            if tonnage <= 11.5:
+                discount_percentage = vbond_settings_doc.at_less_then_115_mt
+            elif 11.5 < tonnage <= 18:
+                discount_percentage = vbond_settings_doc.at_12_18_mt
+            elif 18 < tonnage <= 25:
+                discount_percentage = vbond_settings_doc.at_18_25_mt
+            elif tonnage > 25:
+                discount_percentage = vbond_settings_doc.at_more_then_25_mt
+        else:
+            if tonnage <= 11.5:
+                discount_percentage = vbond_settings_doc.ot_less_then_115_mt
+            elif 11.5 < tonnage <= 18:
+                discount_percentage = vbond_settings_doc.ot_12_18_mt
+            elif 18 < tonnage <= 30:
+                discount_percentage = vbond_settings_doc.ot_18_30_mt
+            elif tonnage > 30:
+                discount_percentage = vbond_settings_doc.ot_more_then_30_mt
+
+    elif discount_based_on == "Value":
+        if 50000 < total_amount <= 100000:
+            discount_percentage = vbond_settings_doc.v_05_1_lacs
+        elif 100000 < total_amount <= 250000:
+            discount_percentage = vbond_settings_doc.v_1_25_lacs
+        elif 250000 < total_amount <= 350000:
+            discount_percentage = vbond_settings_doc.v_25_35_lacs
+        elif total_amount > 350000:
+            discount_percentage = vbond_settings_doc.v_more_then_35_lacs
+
+    return discount_percentage

@@ -6,8 +6,28 @@
  "engine": "InnoDB",
  "field_order": [
   "default_overtime_salary_component",
-  "column_break_nxqh",
-  "default_gratuity_component"
+  "column_break_ryrb",
+  "default_gratuity_component",
+  "pricing_strategy_tab",
+  "insurance",
+  "weight_discount_telangana_andhra_pradesh_section",
+  "at_less_then_115_mt",
+  "at_18_25_mt",
+  "column_break_usdk",
+  "at_12_18_mt",
+  "at_more_then_25_mt",
+  "weight_discount_for_other_states_section",
+  "ot_less_then_115_mt",
+  "ot_18_30_mt",
+  "column_break_qll3",
+  "ot_12_18_mt",
+  "ot_more_then_30_mt",
+  "value_discount_for_all_states_section",
+  "v_05_1_lacs",
+  "v_25_35_lacs",
+  "column_break_b8gt",
+  "v_1_25_lacs",
+  "v_more_then_35_lacs"
  ],
  "fields": [
   {
@@ -23,15 +43,115 @@
    "options": "Salary Component"
   },
   {
-   "fieldname": "column_break_nxqh",
+   "fieldname": "pricing_strategy_tab",
+   "fieldtype": "Tab Break",
+   "label": "Pricing Strategy"
+  },
+  {
+   "fieldname": "insurance",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Insurance",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ryrb",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_usdk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "weight_discount_telangana_andhra_pradesh_section",
+   "fieldtype": "Section Break",
+   "label": "Weight Discount ( Telangana & Andhra Pradesh )"
+  },
+  {
+   "fieldname": "weight_discount_for_other_states_section",
+   "fieldtype": "Section Break",
+   "label": "Weight Discount for Other States"
+  },
+  {
+   "fieldname": "column_break_qll3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "value_discount_for_all_states_section",
+   "fieldtype": "Section Break",
+   "label": "Value Discount for All States"
+  },
+  {
+   "fieldname": "column_break_b8gt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "at_less_then_115_mt",
+   "fieldtype": "Percent",
+   "label": "Less Then 11.5 MT"
+  },
+  {
+   "fieldname": "at_18_25_mt",
+   "fieldtype": "Percent",
+   "label": "18 MT to 25 MT"
+  },
+  {
+   "fieldname": "at_12_18_mt",
+   "fieldtype": "Percent",
+   "label": "12 MT to 18 MT"
+  },
+  {
+   "fieldname": "at_more_then_25_mt",
+   "fieldtype": "Percent",
+   "label": "More Then 25 MT"
+  },
+  {
+   "fieldname": "ot_less_then_115_mt",
+   "fieldtype": "Percent",
+   "label": "Less Then 11.5 MT"
+  },
+  {
+   "fieldname": "ot_18_30_mt",
+   "fieldtype": "Percent",
+   "label": "18 MT to 30 MT"
+  },
+  {
+   "fieldname": "ot_12_18_mt",
+   "fieldtype": "Percent",
+   "label": "12 MT to 18 MT"
+  },
+  {
+   "fieldname": "ot_more_then_30_mt",
+   "fieldtype": "Percent",
+   "label": "More Then 30 MT"
+  },
+  {
+   "fieldname": "v_05_1_lacs",
+   "fieldtype": "Currency",
+   "label": "0.5 Lacs to 1 Lacs"
+  },
+  {
+   "fieldname": "v_25_35_lacs",
+   "fieldtype": "Currency",
+   "label": "2.5 Lacs to 3.5 Lacs"
+  },
+  {
+   "fieldname": "v_1_25_lacs",
+   "fieldtype": "Currency",
+   "label": "1 Lacs to 2.5 Lacs"
+  },
+  {
+   "fieldname": "v_more_then_35_lacs",
+   "fieldtype": "Currency",
+   "label": "More Then 3.5 Lacs"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-02-13 11:58:39.865986",
+ "modified": "2026-05-21 10:52:09.910277",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "Vbond Settings",
