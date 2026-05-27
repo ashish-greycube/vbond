@@ -418,7 +418,7 @@ def fetch_discount_percentage_and_calculate_discount_amount(self, method):
     insurance_discount_percentage = vbond_settings_doc.insurance
     insurance_discount_amount = amount_after_cash_discount * (insurance_discount_percentage / 100)
 
-    total_additional_discount_amount = discount_amount_weight_value + cash_discount_amount - insurance_discount_amount
+    total_additional_discount_amount = discount_amount_weight_value + special_discount_amount + cash_discount_amount - insurance_discount_amount
 
     self.custom_discount_amount_weight_value = discount_amount_weight_value
     self.custom_special_discount_amount = special_discount_amount
