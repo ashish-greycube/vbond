@@ -398,7 +398,7 @@ def fetch_discount_percentage_and_calculate_discount_amount(self, method):
         frappe.throw("Please Set Discount Percentage Based On Value In Vbond Settings To Calculate Discount Amount.")
         return
     
-    tonnage = self.custom_total_tonnage
+    tonnage = (self.total_net_weight / 1000) or 0
     total_amount = self.total
     discount_percentage_based_on_weight_value = get_discount_percentage_based_on_range(self.custom_state, tonnage, total_amount, self.custom_discount_based_on)
     ### if allow overwrite then calculate discount based manually added %
