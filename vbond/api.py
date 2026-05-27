@@ -401,10 +401,17 @@ def fetch_discount_percentage_and_calculate_discount_amount(self, method):
     tonnage = self.custom_total_tonnage
     total_amount = self.total
     discount_percentage_based_on_weight_value = get_discount_percentage_based_on_range(self.custom_state, tonnage, total_amount, self.custom_discount_based_on)
+    ### if allow overwrite then calculate discount based manually added %
+    if self.custom_discount_based_on == "Value" and self.custom_allow_overwrite ==1:
+        discount_percentage_based_on_weight_value = self.custom_weight_value_discount_percentage
+    else:
+        self.custom_weight_value_discount_percentage = discount_percentage_based_on_weight_value
     discount_amount_weight_value = self.total * (discount_percentage_based_on_weight_value / 100)
     amount_after_weight_value_discount = self.total - discount_amount_weight_value
-    cash_discount_amount = amount_after_weight_value_discount * ((self.custom_cash_discount_percentage or 0) / 100)
-    amount_after_cash_discount = amount_after_weight_value_discount - cash_discount_amount
+    special_discount_amount = amount_after_weight_value_discount * ((self.custom_special_discount_percentage or 0) / 100)
+    amount_after_special_discount = amount_after_weight_value_discount - special_discount_amount
+    cash_discount_amount = amount_after_special_discount * ((self.custom_cash_discount_percentage or 0) / 100)
+    amount_after_cash_discount = amount_after_special_discount - cash_discount_amount
     if vbond_settings_doc.insurance in [0, None]:
         frappe.throw("Please Set Insurance Discount Percentage In Vbond Settings To Calculate Insurance Discount Amount.")
         return
@@ -413,8 +420,8 @@ def fetch_discount_percentage_and_calculate_discount_amount(self, method):
 
     total_additional_discount_amount = discount_amount_weight_value + cash_discount_amount - insurance_discount_amount
 
-    self.custom_weight_value_discount_percentage = discount_percentage_based_on_weight_value
     self.custom_discount_amount_weight_value = discount_amount_weight_value
+    self.custom_special_discount_amount = special_discount_amount
     self.custom_cash_discount_amount = cash_discount_amount
     self.custom_insurance_percentage = insurance_discount_percentage
     self.custom_insurance_amount = insurance_discount_amount

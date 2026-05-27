@@ -148,6 +148,7 @@ doc_events = {
 	},
     "Sales Order" : {
         "before_save" : "vbond.api.calculate_transport_data",
+        "before_validate" : "vbond.api.fetch_discount_percentage_and_calculate_discount_amount",
 	},
     "Sales Invoice" : {
         "before_save" : "vbond.api.calculate_transport_data",
