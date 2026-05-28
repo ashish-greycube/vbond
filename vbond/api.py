@@ -387,45 +387,54 @@ def generate_valid_batch_no(item_code, batch_no_checked, posting_date, doctype):
     
 @frappe.whitelist()
 def fetch_discount_percentage_and_calculate_discount_amount(self, method):
-    vbond_settings_doc = frappe.get_doc("Vbond Settings")
-    if (vbond_settings_doc.at_12_18_mt in [0, None] or vbond_settings_doc.at_18_25_mt in [0, None] or vbond_settings_doc.at_more_then_25_mt in [0, None]):
-        frappe.throw("Please Set Discount Percentage for Telangana and Andhra Pradesh In Vbond Settings To Calculate Discount Amount.")
-        return
-    if (vbond_settings_doc.ot_12_18_mt in [0, None] or vbond_settings_doc.ot_18_30_mt in [0, None] or vbond_settings_doc.ot_more_then_30_mt in [0, None]):
-        frappe.throw("Please Set Discount Percentage for Other States In Vbond Settings To Calculate Discount Amount.")
-        return
-    if (vbond_settings_doc.v_05_1_lacs in [0, None] or vbond_settings_doc.v_1_25_lacs in [0, None] or vbond_settings_doc.v_25_35_lacs in [0, None] or vbond_settings_doc.v_more_then_35_lacs in [0, None]):
-        frappe.throw("Please Set Discount Percentage Based On Value In Vbond Settings To Calculate Discount Amount.")
-        return
-    
-    tonnage = (self.total_net_weight / 1000) or 0
-    total_amount = self.total
-    discount_percentage_based_on_weight_value = get_discount_percentage_based_on_range(self.custom_state, tonnage, total_amount, self.custom_discount_based_on)
-    ### if allow overwrite then calculate discount based manually added %
-    if self.custom_discount_based_on == "Value" and self.custom_allow_overwrite ==1:
-        discount_percentage_based_on_weight_value = self.custom_weight_value_discount_percentage
-    else:
-        self.custom_weight_value_discount_percentage = discount_percentage_based_on_weight_value
-    discount_amount_weight_value = self.total * (discount_percentage_based_on_weight_value / 100)
-    amount_after_weight_value_discount = self.total - discount_amount_weight_value
-    special_discount_amount = amount_after_weight_value_discount * ((self.custom_special_discount_percentage or 0) / 100)
-    amount_after_special_discount = amount_after_weight_value_discount - special_discount_amount
-    cash_discount_amount = amount_after_special_discount * ((self.custom_cash_discount_percentage or 0) / 100)
-    amount_after_cash_discount = amount_after_special_discount - cash_discount_amount
-    if vbond_settings_doc.insurance in [0, None]:
-        frappe.throw("Please Set Insurance Discount Percentage In Vbond Settings To Calculate Insurance Discount Amount.")
-        return
-    insurance_discount_percentage = vbond_settings_doc.insurance
-    insurance_discount_amount = amount_after_cash_discount * (insurance_discount_percentage / 100)
+    if hasattr(self,"is_return"):
+        if self.is_return == 0:
+            calculate_discount = True
+        else :
+            calculate_discount = False
+    else :
+        calculate_discount = True
 
-    total_additional_discount_amount = discount_amount_weight_value + special_discount_amount + cash_discount_amount - insurance_discount_amount
+    if calculate_discount == True:
+        vbond_settings_doc = frappe.get_doc("Vbond Settings")
+        if (vbond_settings_doc.at_12_18_mt in [0, None] or vbond_settings_doc.at_18_25_mt in [0, None] or vbond_settings_doc.at_more_then_25_mt in [0, None]):
+            frappe.throw("Please Set Discount Percentage for Telangana and Andhra Pradesh In Vbond Settings To Calculate Discount Amount.")
+            return
+        if (vbond_settings_doc.ot_12_18_mt in [0, None] or vbond_settings_doc.ot_18_30_mt in [0, None] or vbond_settings_doc.ot_more_then_30_mt in [0, None]):
+            frappe.throw("Please Set Discount Percentage for Other States In Vbond Settings To Calculate Discount Amount.")
+            return
+        if (vbond_settings_doc.v_05_1_lacs in [0, None] or vbond_settings_doc.v_1_25_lacs in [0, None] or vbond_settings_doc.v_25_35_lacs in [0, None] or vbond_settings_doc.v_more_then_35_lacs in [0, None]):
+            frappe.throw("Please Set Discount Percentage Based On Value In Vbond Settings To Calculate Discount Amount.")
+            return
+        
+        tonnage = (self.total_net_weight / 1000) or 0
+        total_amount = self.total
+        discount_percentage_based_on_weight_value = get_discount_percentage_based_on_range(self.custom_state, tonnage, total_amount, self.custom_discount_based_on)
+        ### if allow overwrite then calculate discount based manually added %
+        if self.custom_discount_based_on == "Value" and self.custom_allow_overwrite ==1:
+            discount_percentage_based_on_weight_value = self.custom_weight_value_discount_percentage
+        else:
+            self.custom_weight_value_discount_percentage = discount_percentage_based_on_weight_value
+        discount_amount_weight_value = self.total * (discount_percentage_based_on_weight_value / 100)
+        amount_after_weight_value_discount = self.total - discount_amount_weight_value
+        special_discount_amount = amount_after_weight_value_discount * ((self.custom_special_discount_percentage or 0) / 100)
+        amount_after_special_discount = amount_after_weight_value_discount - special_discount_amount
+        cash_discount_amount = amount_after_special_discount * ((self.custom_cash_discount_percentage or 0) / 100)
+        amount_after_cash_discount = amount_after_special_discount - cash_discount_amount
+        if vbond_settings_doc.insurance in [0, None]:
+            frappe.throw("Please Set Insurance Discount Percentage In Vbond Settings To Calculate Insurance Discount Amount.")
+            return
+        insurance_discount_percentage = vbond_settings_doc.insurance
+        insurance_discount_amount = amount_after_cash_discount * (insurance_discount_percentage / 100)
 
-    self.custom_discount_amount_weight_value = discount_amount_weight_value
-    self.custom_special_discount_amount = special_discount_amount
-    self.custom_cash_discount_amount = cash_discount_amount
-    self.custom_insurance_percentage = insurance_discount_percentage
-    self.custom_insurance_amount = insurance_discount_amount
-    self.discount_amount = total_additional_discount_amount
+        total_additional_discount_amount = discount_amount_weight_value + special_discount_amount + cash_discount_amount - insurance_discount_amount
+
+        self.custom_discount_amount_weight_value = discount_amount_weight_value
+        self.custom_special_discount_amount = special_discount_amount
+        self.custom_cash_discount_amount = cash_discount_amount
+        self.custom_insurance_percentage = insurance_discount_percentage
+        self.custom_insurance_amount = insurance_discount_amount
+        self.discount_amount = total_additional_discount_amount
 
 
 def get_discount_percentage_based_on_range(state, tonnage, total_amount, discount_based_on):
