@@ -252,7 +252,7 @@ def fetch_ot_weekly_off_public_holidays_in_salary_slip(self, method=None):
         doctype = "Holiday",
         parent_doctype="Holiday List",
         filters={"parent":holiday_list,"weekly_off":1, "holiday_date":['between', [self.start_date, self.end_date]]},
-        fields = ['count(holiday_date) as wo'],
+        fields = [{'COUNT': 'holiday_date', 'as': 'wo'}],
         debug = 1
     )
     
@@ -260,7 +260,7 @@ def fetch_ot_weekly_off_public_holidays_in_salary_slip(self, method=None):
         doctype = "Holiday",
         parent_doctype="Holiday List",
         filters={"parent":holiday_list,"weekly_off":0, "holiday_date":['between', [self.start_date, self.end_date]]},
-        fields = ['count(holiday_date) as ph'],
+        fields = [{'COUNT': 'holiday_date', 'as': 'ph'}],
         debug = 1
     )
 
