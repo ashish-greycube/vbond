@@ -411,7 +411,7 @@ def fetch_discount_percentage_and_calculate_discount_amount(self, method):
         total_amount = self.total
         discount_percentage_based_on_weight_value = get_discount_percentage_based_on_range(self.custom_state, tonnage, total_amount, self.custom_discount_based_on)
         ### if allow overwrite then calculate discount based manually added %
-        if self.custom_discount_based_on == "Value" and self.custom_allow_overwrite ==1:
+        if self.custom_allow_overwrite ==1:
             discount_percentage_based_on_weight_value = self.custom_weight_value_discount_percentage
         else:
             self.custom_weight_value_discount_percentage = discount_percentage_based_on_weight_value

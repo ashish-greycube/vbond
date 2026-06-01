@@ -400,7 +400,7 @@ def after_migrate():
           'fieldtype' : 'Check',
           'label' : 'Allow Overwirte',
           'insert_after' : 'custom_discount_based_on',
-          'depends_on' : 'eval: doc.custom_discount_based_on == "Value"',
+          'depends_on' : 'eval: doc.custom_discount_based_on !=""',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'no_copy' : 1
@@ -412,7 +412,7 @@ def after_migrate():
           'insert_after' : 'custom_discount_based_on',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'read_only_depends_on' : 'eval: doc.custom_discount_based_on != "Value" || doc.custom_allow_overwrite != 1 ',
+          'read_only_depends_on' : 'eval: doc.custom_discount_based_on == "" || doc.custom_allow_overwrite != 1 ',
           'no_copy' : 1
         },
         {
@@ -698,7 +698,7 @@ def after_migrate():
           'fieldtype' : 'Check',
           'label' : 'Allow Overwirte',
           'insert_after' : 'custom_discount_based_on',
-          'depends_on' : 'eval: doc.custom_discount_based_on == "Value"',
+          'depends_on' : 'eval: doc.custom_discount_based_on !=""',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'no_copy' : 1
@@ -710,7 +710,7 @@ def after_migrate():
           'insert_after' : 'custom_discount_based_on',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'read_only_depends_on' : 'eval: doc.custom_discount_based_on != "Value" || doc.custom_allow_overwrite != 1 ',
+          'read_only_depends_on' : 'eval: doc.custom_discount_based_on == "" || doc.custom_allow_overwrite != 1 ',
           'no_copy' : 1
         },
         {
