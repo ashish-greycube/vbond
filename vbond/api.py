@@ -206,7 +206,7 @@ def check_batch_no_exist(item_code, batch_no_checked, posting_date):
 
     batches_found = frappe.db.get_list("Batch", {
                         "item" : item_code,
-                        "reference_doctype" : "Stock Entry",
+                        # "reference_doctype" : "Stock Entry",
                         "name" : expected_batch_name
                     },
                     pluck = "name")
@@ -224,7 +224,7 @@ def generate_batch_no(item_code, batch_no_checked, posting_date):
             doc.item = item_code
             doc.manufacturing_date = posting_date
             doc.stock_uom = frappe.db.get_value('Item', item_code, 'stock_uom')
-            doc.reference_doctype = "Stock Entry"
+            # doc.reference_doctype = "Stock Entry"
 
             doc.insert(ignore_permissions = True)
 
@@ -355,7 +355,7 @@ def check_valid_batch_no_exist(item_code, batch_no_checked, posting_date, doctyp
                         "Batch", 
                         {
                             "item" : item_code,
-                            "reference_doctype" : doctype,
+                            # "reference_doctype" : doctype, #### This is commented due to Duplicate Entry issue .... Ticket reference : 1341 - Purchase Receipt Batch Prefix Issue
                             "name" : expected_batch_name
                         },
                         pluck = "name"
@@ -373,7 +373,7 @@ def generate_valid_batch_no(item_code, batch_no_checked, posting_date, doctype):
             doc.item = item_code
             doc.manufacturing_date = posting_date
             doc.stock_uom = frappe.db.get_value('Item', item_code, 'stock_uom')
-            doc.reference_doctype = doctype
+            # doc.reference_doctype = doctype
             doc.insert(ignore_permissions = True)
             return doc.name
         
