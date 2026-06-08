@@ -393,7 +393,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'options' : '\nWeight\nValue',
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_allow_overwrite',
@@ -403,7 +403,7 @@ def after_migrate():
           'depends_on' : 'eval: doc.custom_discount_based_on !=""',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_weight_value_discount_percentage',
@@ -413,7 +413,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only_depends_on' : 'eval: doc.custom_discount_based_on == "" || doc.custom_allow_overwrite != 1 ',
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_discount_amount_weight_value',
@@ -423,7 +423,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only' : 1,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_special_discount_percentage',
@@ -432,7 +432,7 @@ def after_migrate():
           'insert_after' : 'custom_dispatch_datetime',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_special_discount_amount',
@@ -442,7 +442,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only' : 1,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_cash_discount_percentage',
@@ -451,7 +451,7 @@ def after_migrate():
           'insert_after' : 'custom_special_discount_amount',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_cash_discount_amount',
@@ -461,7 +461,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only' : 1,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_insurance_percentage',
@@ -470,18 +470,27 @@ def after_migrate():
           'insert_after' : 'custom_cash_discount_amount',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'read_only' : 1,
-          'no_copy' : 1
+          'read_only_depends_on' : 'eval: doc.custom_allow_overwrite_insurance_precentage != 1',
+          'no_copy' : 0
+        },
+        {
+          'fieldname' : 'custom_allow_overwrite_insurance_precentage',
+          'fieldtype' : 'Check',
+          'label' : 'Allow Overwirte Insurance %',
+          'insert_after' : 'custom_insurance_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_insurance_amount',
           'fieldtype' : 'Currency',
           'label' : 'Insurance amount',
-          'insert_after' : 'custom_insurance_percentage',
+          'insert_after' : 'custom_allow_overwrite_insurance_precentage',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only' : 1,
-          'no_copy' : 1
+          'no_copy' : 0
         },
       ], 
 
@@ -691,7 +700,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'options' : '\nWeight\nValue',
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_allow_overwrite',
@@ -701,7 +710,7 @@ def after_migrate():
           'depends_on' : 'eval: doc.custom_discount_based_on !=""',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_weight_value_discount_percentage',
@@ -711,7 +720,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only_depends_on' : 'eval: doc.custom_discount_based_on == "" || doc.custom_allow_overwrite != 1 ',
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_discount_amount_weight_value',
@@ -721,7 +730,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only' : 1,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_special_discount_percentage',
@@ -730,7 +739,7 @@ def after_migrate():
           'insert_after' : 'custom_hired_vehicle_number',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_special_discount_amount',
@@ -740,7 +749,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only' : 1,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_cash_discount_percentage',
@@ -749,7 +758,7 @@ def after_migrate():
           'insert_after' : 'custom_special_discount_amount',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_cash_discount_amount',
@@ -759,7 +768,7 @@ def after_migrate():
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only' : 1,
-          'no_copy' : 1
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_insurance_percentage',
@@ -768,18 +777,27 @@ def after_migrate():
           'insert_after' : 'custom_cash_discount_amount',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
-          'read_only' : 1,
-          'no_copy' : 1
+          'read_only_depends_on' : 'eval: doc.custom_allow_overwrite_insurance_precentage != 1',
+          'no_copy' : 0
+        },
+        {
+          'fieldname' : 'custom_allow_overwrite_insurance_precentage',
+          'fieldtype' : 'Check',
+          'label' : 'Allow Overwirte Insurance %',
+          'insert_after' : 'custom_insurance_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0
         },
         {
           'fieldname' : 'custom_insurance_amount',
           'fieldtype' : 'Currency',
           'label' : 'Insurance amount',
-          'insert_after' : 'custom_insurance_percentage',
+          'insert_after' : 'custom_allow_overwrite_insurance_precentage',
           'is_custom_field' : 1,
           'is_system_generated' : 0,
           'read_only' : 1,
-          'no_copy' : 1
+          'no_copy' : 0
         },
       ],
 

@@ -425,6 +425,11 @@ def fetch_discount_percentage_and_calculate_discount_amount(self, method):
             frappe.throw("Please Set Insurance Discount Percentage In Vbond Settings To Calculate Insurance Discount Amount.")
             return
         insurance_discount_percentage = vbond_settings_doc.insurance
+        if self.custom_allow_overwrite_insurance_precentage == 1:
+            insurance_discount_percentage = self.custom_insurance_percentage
+        else :
+            self.custom_insurance_percentage = insurance_discount_percentage
+        
         insurance_discount_amount = amount_after_cash_discount * (insurance_discount_percentage / 100)
 
         total_additional_discount_amount = discount_amount_weight_value + special_discount_amount + cash_discount_amount - insurance_discount_amount
@@ -432,7 +437,6 @@ def fetch_discount_percentage_and_calculate_discount_amount(self, method):
         self.custom_discount_amount_weight_value = discount_amount_weight_value
         self.custom_special_discount_amount = special_discount_amount
         self.custom_cash_discount_amount = cash_discount_amount
-        self.custom_insurance_percentage = insurance_discount_percentage
         self.custom_insurance_amount = insurance_discount_amount
         self.discount_amount = total_additional_discount_amount
 
