@@ -143,6 +143,7 @@ jinja = {
 
 doc_events = {
 	"Delivery Note": {
+        "before_validate" : "vbond.api.fetch_discount_percentage_and_calculate_discount_amount",
 		"before_save" : "vbond.api.calculate_transport_data",
         "before_submit" : "vbond.api.calculate_basic_amount",
 	},
