@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_bulk_edit": 1,
  "allow_rename": 1,
  "creation": "2025-10-06 10:35:39.354538",
  "doctype": "DocType",
@@ -9,25 +10,16 @@
   "column_break_ryrb",
   "default_gratuity_component",
   "pricing_strategy_tab",
+  "trade_discount_percentage",
   "insurance",
+  "column_break_ramr",
+  "product_discount_percentage",
   "weight_discount_telangana_andhra_pradesh_section",
-  "at_less_then_115_mt",
-  "at_18_25_mt",
-  "column_break_usdk",
-  "at_12_18_mt",
-  "at_more_then_25_mt",
+  "weight_discount_slabs_details_at",
   "weight_discount_for_other_states_section",
-  "ot_less_then_115_mt",
-  "ot_18_30_mt",
-  "column_break_qll3",
-  "ot_12_18_mt",
-  "ot_more_then_30_mt",
+  "weight_discount_slabs_details_ot",
   "value_discount_for_all_states_section",
-  "v_05_1_lacs",
-  "v_25_35_lacs",
-  "column_break_b8gt",
-  "v_1_25_lacs",
-  "v_more_then_35_lacs"
+  "value_discount_slabs_details"
  ],
  "fields": [
   {
@@ -51,16 +43,12 @@
    "fieldname": "insurance",
    "fieldtype": "Percent",
    "in_list_view": 1,
-   "label": "Insurance",
+   "label": "Insurance %",
    "non_negative": 1,
    "reqd": 1
   },
   {
    "fieldname": "column_break_ryrb",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_usdk",
    "fieldtype": "Column Break"
   },
   {
@@ -74,84 +62,52 @@
    "label": "Weight Discount for Other States"
   },
   {
-   "fieldname": "column_break_qll3",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "value_discount_for_all_states_section",
    "fieldtype": "Section Break",
    "label": "Value Discount for All States"
   },
   {
-   "fieldname": "column_break_b8gt",
+   "fieldname": "weight_discount_slabs_details_at",
+   "fieldtype": "Table",
+   "label": "Weight Discount Slabs Details AT",
+   "options": "Weight Discount Slabs Details VB"
+  },
+  {
+   "fieldname": "weight_discount_slabs_details_ot",
+   "fieldtype": "Table",
+   "label": "Weight Discount Slabs Details OT",
+   "options": "Weight Discount Slabs Details VB"
+  },
+  {
+   "fieldname": "value_discount_slabs_details",
+   "fieldtype": "Table",
+   "label": "Value Discount Slabs Details",
+   "options": "Value Discount Slabs Details VB"
+  },
+  {
+   "fieldname": "trade_discount_percentage",
+   "fieldtype": "Percent",
+   "label": "Trade Discount %",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ramr",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "at_less_then_115_mt",
+   "fieldname": "product_discount_percentage",
    "fieldtype": "Percent",
-   "label": "Less Then 11.5 MT"
-  },
-  {
-   "fieldname": "at_18_25_mt",
-   "fieldtype": "Percent",
-   "label": "18 MT to 25 MT"
-  },
-  {
-   "fieldname": "at_12_18_mt",
-   "fieldtype": "Percent",
-   "label": "12 MT to 18 MT"
-  },
-  {
-   "fieldname": "at_more_then_25_mt",
-   "fieldtype": "Percent",
-   "label": "More Then 25 MT"
-  },
-  {
-   "fieldname": "ot_less_then_115_mt",
-   "fieldtype": "Percent",
-   "label": "Less Then 11.5 MT"
-  },
-  {
-   "fieldname": "ot_18_30_mt",
-   "fieldtype": "Percent",
-   "label": "18 MT to 30 MT"
-  },
-  {
-   "fieldname": "ot_12_18_mt",
-   "fieldtype": "Percent",
-   "label": "12 MT to 18 MT"
-  },
-  {
-   "fieldname": "ot_more_then_30_mt",
-   "fieldtype": "Percent",
-   "label": "More Then 30 MT"
-  },
-  {
-   "fieldname": "v_05_1_lacs",
-   "fieldtype": "Currency",
-   "label": "0.5 Lacs to 1 Lacs"
-  },
-  {
-   "fieldname": "v_25_35_lacs",
-   "fieldtype": "Currency",
-   "label": "2.5 Lacs to 3.5 Lacs"
-  },
-  {
-   "fieldname": "v_1_25_lacs",
-   "fieldtype": "Currency",
-   "label": "1 Lacs to 2.5 Lacs"
-  },
-  {
-   "fieldname": "v_more_then_35_lacs",
-   "fieldtype": "Currency",
-   "label": "More Then 3.5 Lacs"
+   "label": "Product Discount %",
+   "non_negative": 1,
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-05-25 12:01:10.453437",
+ "modified": "2026-07-30 11:25:56.338851",
  "modified_by": "Administrator",
  "module": "Vbond",
  "name": "Vbond Settings",

@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 import erpnext
-from frappe.utils import flt
+from frappe.utils import flt, get_link_to_form
 from erpnext.buying.report.item_wise_purchase_history.item_wise_purchase_history import execute 
 
 # Function For Filtering Destination Based On State
@@ -385,8 +385,107 @@ def generate_valid_batch_no(item_code, batch_no_checked, posting_date, doctype):
         generated_batch_no = make_batch(item_code, posting_date, batch_id, doctype)
         return generated_batch_no
     
+
+def get_discount_percentage_from_slabs(slabs, value, from_fieldname, to_fieldname):
+    value = flt(value)
+    for slab in slabs:
+        from_value = flt(slab.get(from_fieldname))
+        to_value = flt(slab.get(to_fieldname))
+        if value > from_value and (not to_value or value <= to_value):
+            return flt(slab.discount_percentage)
+    return 0
+
+
+def get_discount_percentage_based_on_range(state, tonnage, total_amount, is_based_on_weight):
+    vbond_settings_doc = frappe.get_doc("Vbond Settings")
+    tonnage = flt(tonnage)
+    total_amount = flt(total_amount)
+
+    if len(vbond_settings_doc.weight_discount_slabs_details_at)==0:
+        frappe.throw(_("Please Set Weight Discount Slabs Details for Telangana & Andhra Pradesh in {0}".format(get_link_to_form("Vbond Settings","Vbond Settings"))))
+
+    if len(vbond_settings_doc.weight_discount_slabs_details_ot)==0:
+        frappe.throw(_("Please Set Weight Discount Slabs Details for Other States in {0}".format(get_link_to_form("Vbond Settings","Vbond Settings"))))
+
+    if len(vbond_settings_doc.value_discount_slabs_details)==0:
+        frappe.throw(_("Please Set Value Discount Slabs Details in {0}".format(get_link_to_form("Vbond Settings","Vbond Settings"))))
+
+    if is_based_on_weight:
+        slabs = (
+            vbond_settings_doc.weight_discount_slabs_details_at
+            if state in ["Telangana", "Andhra Pradesh"]
+            else vbond_settings_doc.weight_discount_slabs_details_ot
+        )
+        return get_discount_percentage_from_slabs(slabs, tonnage, "from_mt", "to_mt")
+
+    return get_discount_percentage_from_slabs(
+        vbond_settings_doc.value_discount_slabs_details, total_amount, "from_amount", "to_amount"
+    )
+
+
 @frappe.whitelist()
-def fetch_discount_percentage_and_calculate_discount_amount(self, method):
+def get_default_discount_template(company, discount_template=None):
+    if not company:
+        return {}
+
+    if discount_template:
+        template_company = frappe.get_cached_value("Discount Template VB", discount_template, "company")
+        if template_company == company:
+            return {}
+
+    default_template = frappe.db.get_value(
+        "Discount Template VB", {"default": 1, "company": company, "disable": 0}
+    )
+    if not default_template:
+        frappe.msgprint(_("Default Discount template not found"),alert=True)
+
+    return {
+        "discount_template": default_template,
+        "discount_template_details": get_discount_template_details(default_template),
+    }
+
+
+@frappe.whitelist()
+def fetch_default_discount_template(self, method=None):
+    if self.get("custom_discount_template_details"):
+        return
+
+    if not self.get("company"):
+        return
+
+    result = get_default_discount_template(self.company, self.get("custom_discount_template"))
+    if not result:
+        return
+
+    if result.get("discount_template"):
+        self.custom_discount_template = result.get("discount_template")
+
+    if result.get("discount_template_details"):
+        self.set("custom_discount_template_details", result.get("discount_template_details"))
+
+
+@frappe.whitelist()
+def get_discount_template_details(discount_template):
+    if not discount_template:
+        return []
+
+    template = frappe.get_doc("Discount Template VB", discount_template)
+  
+    details = []
+    for row in template.get("discount_template_details"):
+        row = row.as_dict()
+        new_row = {}
+        new_row["auto_calculate"] = row.auto_calculate
+        new_row["apply_on"] = row.apply_on
+        new_row["type_of_discount"] = row.type_of_discount
+        new_row["discount_percentage_vb"] = row.discount_percentage_vb
+        details.append(new_row)
+
+    return details
+
+
+@frappe.whitelist()
+def fetch_trade_and_product_discount_percentage_from_settings(self, method=None):
     if hasattr(self,"is_return"):
         if self.is_return == 0:
             calculate_discount = True
@@ -396,84 +495,110 @@ def fetch_discount_percentage_and_calculate_discount_amount(self, method):
         calculate_discount = True
 
     if calculate_discount == True:
-        vbond_settings_doc = frappe.get_doc("Vbond Settings")
-        if (vbond_settings_doc.at_12_18_mt in [0, None] or vbond_settings_doc.at_18_25_mt in [0, None] or vbond_settings_doc.at_more_then_25_mt in [0, None]):
-            frappe.throw("Please Set Discount Percentage for Telangana and Andhra Pradesh In Vbond Settings To Calculate Discount Amount.")
+        if len(self.items) == 0:
             return
-        if (vbond_settings_doc.ot_12_18_mt in [0, None] or vbond_settings_doc.ot_18_30_mt in [0, None] or vbond_settings_doc.ot_more_then_30_mt in [0, None]):
-            frappe.throw("Please Set Discount Percentage for Other States In Vbond Settings To Calculate Discount Amount.")
+
+        if self.get("custom_apply_vbond_discount") != 1:
+            for row in self.items:
+                row.custom_trade_discount_percentage = 0
+                row.custom_product_discount_percentage = 0
+                row.discount_percentage = 0
+                row.discount_amount = 0
+                if row.price_list_rate:
+                    row.rate = row.price_list_rate
             return
-        if (vbond_settings_doc.v_05_1_lacs in [0, None] or vbond_settings_doc.v_1_25_lacs in [0, None] or vbond_settings_doc.v_25_35_lacs in [0, None] or vbond_settings_doc.v_more_then_35_lacs in [0, None]):
-            frappe.throw("Please Set Discount Percentage Based On Value In Vbond Settings To Calculate Discount Amount.")
-            return
-        
-        tonnage = (self.total_net_weight / 1000) or 0
-        total_amount = self.total
-        discount_percentage_based_on_weight_value = get_discount_percentage_based_on_range(self.custom_state, tonnage, total_amount, self.custom_discount_based_on)
-        ### if allow overwrite then calculate discount based manually added %
-        if self.custom_allow_overwrite ==1:
-            discount_percentage_based_on_weight_value = self.custom_weight_value_discount_percentage
-        else:
-            self.custom_weight_value_discount_percentage = discount_percentage_based_on_weight_value
-        discount_amount_weight_value = self.total * (discount_percentage_based_on_weight_value / 100)
-        amount_after_weight_value_discount = self.total - discount_amount_weight_value
-        special_discount_amount = amount_after_weight_value_discount * ((self.custom_special_discount_percentage or 0) / 100)
-        amount_after_special_discount = amount_after_weight_value_discount - special_discount_amount
-        cash_discount_amount = amount_after_special_discount * ((self.custom_cash_discount_percentage or 0) / 100)
-        amount_after_cash_discount = amount_after_special_discount - cash_discount_amount
-        if vbond_settings_doc.insurance in [0, None]:
-            frappe.throw("Please Set Insurance Discount Percentage In Vbond Settings To Calculate Insurance Discount Amount.")
-            return
-        insurance_discount_percentage = vbond_settings_doc.insurance
-        if self.custom_allow_overwrite_insurance_precentage == 1:
-            insurance_discount_percentage = self.custom_insurance_percentage
+
+        trade_discount_percentage = flt(frappe.db.get_single_value("Vbond Settings", "trade_discount_percentage"))
+        if trade_discount_percentage == 0:
+            frappe.throw(_("Please set Trade Discount Percentage in {0}").format(get_link_to_form("Vbond Settings", "Vbond Settings")))
+
+        product_discount_percentage = flt(frappe.db.get_single_value("Vbond Settings", "product_discount_percentage"))
+        if product_discount_percentage == 0:
+            frappe.throw(_("Please set Product Discount Percentage in {0}").format(get_link_to_form("Vbond Settings", "Vbond Settings")))
+
+        total_discount_percentage = trade_discount_percentage + (
+            (1 - trade_discount_percentage / 100) * product_discount_percentage
+        )
+
+        for row in self.items:
+            row.custom_trade_discount_percentage = trade_discount_percentage
+            row.custom_product_discount_percentage = product_discount_percentage
+            row.discount_percentage = total_discount_percentage
+            if row.price_list_rate:
+                row.discount_amount = flt(
+                    row.price_list_rate * total_discount_percentage / 100, row.precision("discount_amount")
+                )
+                row.rate = flt(row.price_list_rate - row.discount_amount, row.precision("rate"))
+
+
+@frappe.whitelist()
+def calculate_discount_from_template(self, method=None):
+    if hasattr(self,"is_return"):
+        if self.is_return == 0:
+            calculate_discount = True
         else :
-            self.custom_insurance_percentage = insurance_discount_percentage
+            calculate_discount = False
+    else :
+        calculate_discount = True
+
+
+    if calculate_discount == True:
         
-        insurance_discount_amount = amount_after_cash_discount * (insurance_discount_percentage / 100)
+        if not self.get("custom_discount_template_details"):
+            return
 
-        total_additional_discount_amount = discount_amount_weight_value + special_discount_amount + cash_discount_amount - insurance_discount_amount
+        if self.get("custom_apply_vbond_discount") != 1:
+            for row in self.custom_discount_template_details:
+                row.discount_percentage_vb = 0
+                row.discount_amount_vb = 0
+                row.amount_after_discount = 0
+            self.discount_amount = 0
+            self.custom_insurance_percentage = 0
+            self.custom_insurance_amount = 0
+            return
 
-        self.custom_discount_amount_weight_value = discount_amount_weight_value
-        self.custom_special_discount_amount = special_discount_amount
-        self.custom_cash_discount_amount = cash_discount_amount
-        self.custom_insurance_amount = insurance_discount_amount
-        self.discount_amount = total_additional_discount_amount
+        tonnage = self.get("custom_total_tonnage") or 0
+        total_amount = self.total or 0
+        previous_row_total = self.total or 0
+        total_discount_amount = 0
 
+        for row in self.custom_discount_template_details:
+            if row.auto_calculate == 1:
+                is_based_on_weight = 0
+                fetch_from_settings = 0
+                if row.type_of_discount:
+                    is_based_on_weight = frappe.get_cached_value(
+                        "Discount Type VB", row.type_of_discount, "is_based_on_weight"
+                    )
+                    fetch_from_settings = frappe.get_cached_value(
+                        "Discount Type VB", row.type_of_discount, "fetch_from_settings"
+                    )
+                if fetch_from_settings == 1:
+                    row.discount_percentage_vb = get_discount_percentage_based_on_range(
+                        self.custom_state, tonnage, total_amount, is_based_on_weight
+                    )
 
-def get_discount_percentage_based_on_range(state, tonnage, total_amount, discount_based_on):
-    vbond_settings_doc = frappe.get_doc("Vbond Settings")
-    tonnage = flt(tonnage) or 0
-    total_amount = flt(total_amount) or 0
-    discount_percentage = 0
-    if discount_based_on == "Weight":
-        if state in ["Telangana", "Andhra Pradesh"]:
-            if tonnage <= 11.5:
-                discount_percentage = vbond_settings_doc.at_less_then_115_mt
-            elif 11.5 < tonnage <= 18:
-                discount_percentage = vbond_settings_doc.at_12_18_mt
-            elif 18 < tonnage <= 25:
-                discount_percentage = vbond_settings_doc.at_18_25_mt
-            elif tonnage > 25:
-                discount_percentage = vbond_settings_doc.at_more_then_25_mt
+            base_amount = self.total if row.apply_on == "On Total" else previous_row_total
+            row.discount_amount_vb = flt(
+                base_amount * (row.discount_percentage_vb or 0) / 100, row.precision("discount_amount_vb")
+            )
+            row.amount_after_discount = flt(
+                base_amount - row.discount_amount_vb, row.precision("amount_after_discount")
+            )
+
+            previous_row_total = row.amount_after_discount
+            total_discount_amount += row.discount_amount_vb
+
+        insurance_percentage = flt(frappe.db.get_single_value("Vbond Settings", "insurance"))
+        if self.custom_allow_overwrite_insurance_precentage==1:
+            insurance_percentage = self.custom_insurance_percentage
         else:
-            if tonnage <= 11.5:
-                discount_percentage = vbond_settings_doc.ot_less_then_115_mt
-            elif 11.5 < tonnage <= 18:
-                discount_percentage = vbond_settings_doc.ot_12_18_mt
-            elif 18 < tonnage <= 30:
-                discount_percentage = vbond_settings_doc.ot_18_30_mt
-            elif tonnage > 30:
-                discount_percentage = vbond_settings_doc.ot_more_then_30_mt
+            self.custom_insurance_percentage = insurance_percentage
+        last_row_amount_after_discount = self.custom_discount_template_details[-1].amount_after_discount
+        insurance_amount = flt(
+            last_row_amount_after_discount * insurance_percentage / 100, self.precision("discount_amount")
+        )
+    
+        self.custom_insurance_amount = insurance_amount
 
-    elif discount_based_on == "Value":
-        if 50000 < total_amount <= 100000:
-            discount_percentage = vbond_settings_doc.v_05_1_lacs
-        elif 100000 < total_amount <= 250000:
-            discount_percentage = vbond_settings_doc.v_1_25_lacs
-        elif 250000 < total_amount <= 350000:
-            discount_percentage = vbond_settings_doc.v_25_35_lacs
-        elif total_amount > 350000:
-            discount_percentage = vbond_settings_doc.v_more_then_35_lacs
-
-    return discount_percentage
+        self.discount_amount = flt(total_discount_amount - insurance_amount, self.precision("discount_amount"))

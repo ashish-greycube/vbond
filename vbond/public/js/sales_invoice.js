@@ -15,6 +15,36 @@ frappe.ui.form.on("Sales Invoice", {
         })
     },
 
+    onload_post_render(frm) {
+        if (!frm.doc.custom_discount_template && !(frm.doc.custom_discount_template_details || []).length) {
+            apply_default_discount_template(frm);
+        }
+    },
+
+    company(frm) {
+        if (!frm.doc.custom_discount_template && !(frm.doc.custom_discount_template_details || []).length) {
+            apply_default_discount_template(frm);
+        }
+    },
+
+    custom_discount_template(frm) {
+        console.log("from template")
+        if (!frm.doc.custom_discount_template) {
+            return;
+        }
+        frappe.call({
+            method: "vbond.api.get_discount_template_details",
+            args: {
+                discount_template: frm.doc.custom_discount_template,
+            },
+            callback: function (r) {
+                if (!r.exc) {
+                    frm.set_value("custom_discount_template_details", r.message || []);
+                }
+            },
+        });
+    },
+
 
     custom_transport_destination: function (frm) {
         let destination = frm.doc.custom_transport_destination
@@ -70,3 +100,27 @@ frappe.ui.form.on("Sales Invoice", {
     //     }
     // },
 });
+
+function apply_default_discount_template(frm) {
+    console.log("from function------------------")
+    if (!frm.doc.company) {
+        return;
+    }
+    frappe.call({
+        method: "vbond.api.get_default_discount_template",
+        args: {
+            company: frm.doc.company,
+            discount_template: frm.doc.custom_discount_template || "",
+        },
+        callback: function (r) {
+            if (!r.exc && r.message) {
+                if (r.message.discount_template) {
+                    frm.doc.custom_discount_template = r.message.discount_template;
+                }
+                if (r.message.discount_template_details) {
+                    frm.set_value("custom_discount_template_details", r.message.discount_template_details);
+                }
+            }
+        },
+    });
+}

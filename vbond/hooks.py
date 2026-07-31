@@ -143,17 +143,29 @@ jinja = {
 
 doc_events = {
 	"Delivery Note": {
-        "before_validate" : "vbond.api.fetch_discount_percentage_and_calculate_discount_amount",
+        "before_validate" : [
+            "vbond.api.fetch_default_discount_template",
+            "vbond.api.fetch_trade_and_product_discount_percentage_from_settings",
+            "vbond.api.calculate_discount_from_template",
+        ],
 		"before_save" : "vbond.api.calculate_transport_data",
         "before_submit" : "vbond.api.calculate_basic_amount",
 	},
     "Sales Order" : {
         "before_save" : "vbond.api.calculate_transport_data",
-        "before_validate" : "vbond.api.fetch_discount_percentage_and_calculate_discount_amount",
+        "before_validate" : [
+            "vbond.api.fetch_default_discount_template",
+            "vbond.api.fetch_trade_and_product_discount_percentage_from_settings",
+            "vbond.api.calculate_discount_from_template",
+        ],
 	},
     "Sales Invoice" : {
         "before_save" : "vbond.api.calculate_transport_data",
-        "before_validate" : "vbond.api.fetch_discount_percentage_and_calculate_discount_amount",
+        "before_validate" : [
+            "vbond.api.fetch_default_discount_template",
+            "vbond.api.fetch_trade_and_product_discount_percentage_from_settings",
+            "vbond.api.calculate_discount_from_template",
+        ],
 	},
     "Vehicle Log" : {
         "validate" : "vbond.api.calculate_trip_km"
