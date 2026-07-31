@@ -216,6 +216,92 @@ def after_migrate():
         },
         # Discount Field
         {
+          'fieldname' : 'custom_discount_based_on',
+          'fieldtype' : 'Select',
+          'label' : 'Discount Based on',
+          'insert_after' : 'custom_transport_destination',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'options' : '\nWeight\nValue',
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_allow_overwrite',
+          'fieldtype' : 'Check',
+          'label' : 'Allow Overwirte',
+          'insert_after' : 'custom_discount_based_on',
+          'depends_on' : 'eval: doc.custom_discount_based_on !=""',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_weight_value_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Weight / Value Discount (%)',
+          'insert_after' : 'custom_discount_based_on',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only_depends_on' : 'eval: doc.custom_discount_based_on == "" || doc.custom_allow_overwrite != 1 ',
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_discount_amount_weight_value',
+          'fieldtype' : 'Currency',
+          'label' : 'Discount Amount (Weight/Value)',
+          'insert_after' : 'custom_weight_value_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_special_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Special Discount (%)',
+          'insert_after' : 'custom_hired_vehicle_number',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_special_discount_amount',
+          'fieldtype' : 'Currency',
+          'label' : 'Special Discount Amount',
+          'insert_after' : 'custom_special_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_cash_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Cash Discount (%)',
+          'insert_after' : 'custom_special_discount_amount',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_cash_discount_amount',
+          'fieldtype' : 'Currency',
+          'label' : 'Cash Discount Amount',
+          'insert_after' : 'custom_cash_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
           'fieldname' : 'custom_apply_vbond_discount',
           'fieldtype' : 'Check',
           'label' : 'Apply Vbond Discount',
@@ -446,6 +532,92 @@ def after_migrate():
           'allow_on_submit' : 1
         },
         # Discount Field
+        {
+          'fieldname' : 'custom_discount_based_on',
+          'fieldtype' : 'Select',
+          'label' : 'Discount Based on',
+          'insert_after' : 'custom_transport_destination',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'options' : '\nWeight\nValue',
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_allow_overwrite',
+          'fieldtype' : 'Check',
+          'label' : 'Allow Overwirte',
+          'insert_after' : 'custom_discount_based_on',
+          'depends_on' : 'eval: doc.custom_discount_based_on !=""',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_weight_value_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Weight / Value Discount (%)',
+          'insert_after' : 'custom_discount_based_on',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only_depends_on' : 'eval: doc.custom_discount_based_on == "" || doc.custom_allow_overwrite != 1 ',
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_discount_amount_weight_value',
+          'fieldtype' : 'Currency',
+          'label' : 'Discount Amount (Weight/Value)',
+          'insert_after' : 'custom_weight_value_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_special_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Special Discount (%)',
+          'insert_after' : 'custom_hired_vehicle_number',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_special_discount_amount',
+          'fieldtype' : 'Currency',
+          'label' : 'Special Discount Amount',
+          'insert_after' : 'custom_special_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_cash_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Cash Discount (%)',
+          'insert_after' : 'custom_special_discount_amount',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_cash_discount_amount',
+          'fieldtype' : 'Currency',
+          'label' : 'Cash Discount Amount',
+          'insert_after' : 'custom_cash_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
         {
           'fieldname' : 'custom_apply_vbond_discount',
           'fieldtype' : 'Check',
@@ -707,6 +879,92 @@ def after_migrate():
           'allow_on_submit' : 1,
         },
         # Discount Field
+        {
+          'fieldname' : 'custom_discount_based_on',
+          'fieldtype' : 'Select',
+          'label' : 'Discount Based on',
+          'insert_after' : 'custom_transport_destination',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'options' : '\nWeight\nValue',
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_allow_overwrite',
+          'fieldtype' : 'Check',
+          'label' : 'Allow Overwirte',
+          'insert_after' : 'custom_discount_based_on',
+          'depends_on' : 'eval: doc.custom_discount_based_on !=""',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_weight_value_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Weight / Value Discount (%)',
+          'insert_after' : 'custom_discount_based_on',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only_depends_on' : 'eval: doc.custom_discount_based_on == "" || doc.custom_allow_overwrite != 1 ',
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_discount_amount_weight_value',
+          'fieldtype' : 'Currency',
+          'label' : 'Discount Amount (Weight/Value)',
+          'insert_after' : 'custom_weight_value_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_special_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Special Discount (%)',
+          'insert_after' : 'custom_hired_vehicle_number',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_special_discount_amount',
+          'fieldtype' : 'Currency',
+          'label' : 'Special Discount Amount',
+          'insert_after' : 'custom_special_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_cash_discount_percentage',
+          'fieldtype' : 'Percent',
+          'label' : 'Cash Discount (%)',
+          'insert_after' : 'custom_special_discount_amount',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
+        {
+          'fieldname' : 'custom_cash_discount_amount',
+          'fieldtype' : 'Currency',
+          'label' : 'Cash Discount Amount',
+          'insert_after' : 'custom_cash_discount_percentage',
+          'is_custom_field' : 1,
+          'is_system_generated' : 0,
+          'read_only' : 1,
+          'no_copy' : 0,
+          'hidden' : 1
+        },
         {
           'fieldname' : 'custom_apply_vbond_discount',
           'fieldtype' : 'Check',
