@@ -391,7 +391,7 @@ def get_discount_percentage_from_slabs(slabs, value, from_fieldname, to_fieldnam
     for slab in slabs:
         from_value = flt(slab.get(from_fieldname))
         to_value = flt(slab.get(to_fieldname))
-        if value > from_value and (not to_value or value <= to_value):
+        if value > from_value and (to_value == 0 or value <= to_value):
             return flt(slab.discount_percentage)
     return 0
 
