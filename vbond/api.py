@@ -456,6 +456,9 @@ def fetch_default_discount_template(self, method=None):
         calculate_discount = True
 
     if calculate_discount == True:
+        if self.get("custom_discount_template_details"):
+            return
+        
         if not self.get("company"):
             return
 
