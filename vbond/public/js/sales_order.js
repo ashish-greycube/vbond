@@ -18,14 +18,14 @@ frappe.ui.form.on("Sales Order", {
     },
 
     onload_post_render(frm) {
-        if (frm.doc.__islocal && !frm.doc.custom_discount_template && !(frm.doc.custom_discount_template_details || []).length) {
-            frappe.after_ajax(() => apply_default_discount_template(frm));
+        if (frm.doc.docstatus == 0 && !frm.doc.custom_discount_template && !(frm.doc.custom_discount_template_details || []).length) {
+            apply_default_discount_template(frm);
         }
     },
 
     company(frm) {
-        if (frm.doc.__islocal && !frm.doc.custom_discount_template && !(frm.doc.custom_discount_template_details || []).length) {
-            frappe.after_ajax(() => apply_default_discount_template(frm));
+        if (!frm.doc.custom_discount_template && !(frm.doc.custom_discount_template_details || []).length) {
+            apply_default_discount_template(frm);
         }
     },
 

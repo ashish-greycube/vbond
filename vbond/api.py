@@ -430,7 +430,7 @@ def get_default_discount_template(company, discount_template=None):
 
     if discount_template:
         template_company = frappe.get_cached_value("Discount Template VB", discount_template, "company")
-        if template_company == company:
+        if template_company != company:
             return {}
 
     default_template = frappe.db.get_value(
@@ -447,21 +447,27 @@ def get_default_discount_template(company, discount_template=None):
 
 @frappe.whitelist()
 def fetch_default_discount_template(self, method=None):
-    if self.get("custom_discount_template_details"):
-        return
+    if hasattr(self,"is_return"):
+        if self.is_return == 0:
+            calculate_discount = True
+        else :
+            calculate_discount = False
+    else :
+        calculate_discount = True
 
-    if not self.get("company"):
-        return
+    if calculate_discount == True:
+        if not self.get("company"):
+            return
 
-    result = get_default_discount_template(self.company, self.get("custom_discount_template"))
-    if not result:
-        return
+        result = get_default_discount_template(self.company, self.get("custom_discount_template"))
+        if not result:
+            return
 
-    if result.get("discount_template"):
-        self.custom_discount_template = result.get("discount_template")
+        if result.get("discount_template"):
+            self.custom_discount_template = result.get("discount_template")
 
-    if result.get("discount_template_details"):
-        self.set("custom_discount_template_details", result.get("discount_template_details"))
+        if result.get("discount_template_details"):
+            self.set("custom_discount_template_details", result.get("discount_template_details"))
 
 
 @frappe.whitelist()
@@ -557,7 +563,7 @@ def calculate_discount_from_template(self, method=None):
             self.custom_insurance_amount = 0
             return
 
-        tonnage = self.get("custom_total_tonnage") or 0
+        tonnage = (self.total_net_weight / 1000) or 0
         total_amount = self.total or 0
         previous_row_total = self.total or 0
         total_discount_amount = 0
