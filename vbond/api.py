@@ -456,8 +456,11 @@ def fetch_default_discount_template(self, method=None):
         calculate_discount = True
 
     if calculate_discount == True:
-        if self.get("custom_discount_template_details"):
-            return
+        if self.has_value_changed("custom_apply_vbond_discount"):
+            pass
+        else:
+            if self.get("custom_discount_template_details"):
+                return
         
         if not self.get("company"):
             return
