@@ -539,6 +539,7 @@ def fetch_trade_and_product_discount_percentage_from_settings(self, method=None)
                     row.price_list_rate * total_discount_percentage / 100, row.precision("discount_amount")
                 )
                 row.rate = flt(row.price_list_rate - row.discount_amount, row.precision("rate"))
+        self.calculate_taxes_and_totals()
 
 
 @frappe.whitelist()
