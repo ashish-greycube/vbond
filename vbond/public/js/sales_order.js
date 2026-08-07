@@ -46,6 +46,14 @@ frappe.ui.form.on("Sales Order", {
         });
     },
 
+    after_save(frm) {
+        // discount_amount is set server-side (before_validate), so ERPNext's
+        // set_dynamic_labels() never re-evaluates net_total's visibility on save
+        // (it's memoized on currency, which doesn't change). Force it to re-run.
+        frm.cscript._last_currency = null;
+        frm.cscript.set_dynamic_labels();
+    },
+
     custom_transport_destination: function (frm) {
         let destination = frm.doc.custom_transport_destination
         frappe.db.get_value(
