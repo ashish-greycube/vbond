@@ -81,6 +81,15 @@ frappe.ui.form.on("Sales Invoice", {
             let rate = r.message.custom_rate_per_km
             frm.set_value('custom_transport_rate_per_km', rate)
         })
+    },
+
+    custom_apply_vbond_discount: function (frm) {
+        if (frm.doc.custom_apply_vbond_discount == 1) {
+            apply_default_discount_template(frm);
+            if (frm.doc.is_return == 0) {
+                fetch_product_and_trade_discount(frm);
+            }
+        }
     }
     // refresh(frm) {
     //     if (frm.doc.custom_vehicle_type == "Dedicated") {
@@ -130,5 +139,39 @@ function apply_default_discount_template(frm) {
                 }
             }
         },
+    });
+}
+
+frappe.ui.form.on("Sales Invoice Item", {
+    item_code(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        frappe.call({method:"vbond.api.fetch_trade_and_product_discount_from_settings",
+            args: {
+                row: row
+            },
+            callback: function(r) {
+                if (!r.exc && r.message) {
+                    console.log(r.message.trade_discount_percentage, r.message.product_discount_percentage)
+                    frappe.model.set_value(cdt, cdn, "custom_trade_discount_percentage", r.message.trade_discount_percentage);
+                    frappe.model.set_value(cdt, cdn, "custom_product_discount_percentage", r.message.product_discount_percentage);
+                }
+            }
+        })
+    },
+});
+
+function fetch_product_and_trade_discount(frm) {
+    frm.doc.items.forEach(function (row) {
+        frappe.call({method:"vbond.api.fetch_trade_and_product_discount_from_settings",
+            args: {
+                row: row
+            },
+            callback: function(r) {
+                if (!r.exc && r.message) {
+                    frappe.model.set_value(row.doctype, row.name, "custom_trade_discount_percentage", r.message.trade_discount_percentage);
+                    frappe.model.set_value(row.doctype, row.name, "custom_product_discount_percentage", r.message.product_discount_percentage);
+                }
+            }
+        })
     });
 }

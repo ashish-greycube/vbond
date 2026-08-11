@@ -1,6 +1,7 @@
 import frappe
 from frappe import _
 import erpnext
+import json
 from frappe.utils import flt, get_link_to_form
 from erpnext.buying.report.item_wise_purchase_history.item_wise_purchase_history import execute 
 
@@ -504,35 +505,27 @@ def fetch_trade_and_product_discount_percentage_from_settings(self, method=None)
     else :
         calculate_discount = True
 
+    if self.get("custom_apply_vbond_discount") != 1:
+        for row in self.items:
+            row.custom_trade_discount_percentage = 0
+            row.custom_product_discount_percentage = 0
+            row.discount_percentage = 0
+            row.discount_amount = 0
+            if row.price_list_rate:
+                row.rate = row.price_list_rate
+        return
+
     if calculate_discount == True:
         if len(self.items) == 0:
             return
 
-        if self.get("custom_apply_vbond_discount") != 1:
-            for row in self.items:
-                row.custom_trade_discount_percentage = 0
-                row.custom_product_discount_percentage = 0
-                row.discount_percentage = 0
-                row.discount_amount = 0
-                if row.price_list_rate:
-                    row.rate = row.price_list_rate
-            return
-
-        trade_discount_percentage = flt(frappe.db.get_single_value("Vbond Settings", "trade_discount_percentage"))
-        if trade_discount_percentage == 0:
-            frappe.throw(_("Please set Trade Discount Percentage in {0}").format(get_link_to_form("Vbond Settings", "Vbond Settings")))
-
-        product_discount_percentage = flt(frappe.db.get_single_value("Vbond Settings", "product_discount_percentage"))
-        if product_discount_percentage == 0:
-            frappe.throw(_("Please set Product Discount Percentage in {0}").format(get_link_to_form("Vbond Settings", "Vbond Settings")))
-
-        total_discount_percentage = trade_discount_percentage + (
-            (1 - trade_discount_percentage / 100) * product_discount_percentage
-        )
-
         for row in self.items:
-            row.custom_trade_discount_percentage = trade_discount_percentage
-            row.custom_product_discount_percentage = product_discount_percentage
+            ### set discount percentages and calculate discount amount first time only, if user changed the discount percentage then calculations will be based on it
+            trade_discount_percentage = row.custom_trade_discount_percentage
+            product_discount_percentage = row.custom_product_discount_percentage
+            total_discount_percentage = trade_discount_percentage + (
+                (1 - trade_discount_percentage / 100) * product_discount_percentage
+            )
             row.discount_percentage = total_discount_percentage
             if row.price_list_rate:
                 row.discount_amount = flt(
@@ -613,3 +606,20 @@ def calculate_discount_from_template(self, method=None):
         self.custom_insurance_amount = insurance_amount
 
         self.discount_amount = flt(total_discount_amount - insurance_amount, self.precision("discount_amount"))
+
+@frappe.whitelist()
+def fetch_trade_and_product_discount_from_settings(row):
+    # row = json.loads(row)
+    row = frappe._dict(json.loads(row))
+    trade_discount_percentage = flt(frappe.db.get_single_value("Vbond Settings", "trade_discount_percentage"))
+    if trade_discount_percentage == 0:
+        frappe.throw(_("Please set Trade Discount Percentage in {0}").format(get_link_to_form("Vbond Settings", "Vbond Settings")))
+
+    product_discount_percentage = flt(frappe.db.get_single_value("Vbond Settings", "product_discount_percentage"))
+    if product_discount_percentage == 0:
+        frappe.throw(_("Please set Product Discount Percentage in {0}").format(get_link_to_form("Vbond Settings", "Vbond Settings")))
+
+    return {
+        "trade_discount_percentage": trade_discount_percentage,
+        "product_discount_percentage": product_discount_percentage
+    }
