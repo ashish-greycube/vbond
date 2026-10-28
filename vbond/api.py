@@ -300,7 +300,22 @@ def cancel_overtime_on_cancel_of_additional_salary(self, method=None):
                 overtime_doc.cancel()
                 frappe.msgprint("Overtime Doctype For This Additional Salary Is Cancelled.", alert=True)
     
-            
+def on_cancel_of_overtime_check_for_additional_salary(self, method=None):
+    # draft or submitted Additional Salary created from this Overtime must go first;
+    # when cancelled from Additional Salary itself, it is already cancelled here, so it doesn't block
+    additional_salary_list = frappe.db.get_all(
+        "Additional Salary",
+        filters={"custom_overtime_ref": self.name, "docstatus": ["!=", 2]},
+        pluck="name",
+    )
+    if additional_salary_list:
+        frappe.throw(
+            _("Please cancel or delete Additional Salary {0} linked with this Overtime first.").format(
+                ", ".join(frappe.utils.get_link_to_form("Additional Salary", name) for name in additional_salary_list)
+            ),
+            title=_("Additional Salary Exists"),
+        )
+
 @frappe.whitelist()
 def po_data(item_code):
     filters = {

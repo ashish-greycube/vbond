@@ -182,6 +182,9 @@ doc_events = {
     "Additional Salary": {
         "on_cancel": "vbond.api.cancel_overtime_on_cancel_of_additional_salary"
     },
+    "Vbond Overtime": {
+        "before_cancel": "vbond.api.on_cancel_of_overtime_check_for_additional_salary"
+    },
     "Purchase Receipt" : {
         "before_validate" : "vbond.api.generate_and_set_batch_no_in_purchase_receipt"
     },
